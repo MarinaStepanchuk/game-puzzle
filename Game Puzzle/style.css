@@ -13,10 +13,4 @@ body {
       -ms-flex-align: center;
           align-items: center;
 }
-
-canvas {
-  max-width: 40%;
-  margin-left: auto;
-  margin-right: auto;
-}
 /*# sourceMappingURL=style.css.map */
