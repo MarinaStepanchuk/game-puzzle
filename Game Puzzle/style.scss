@@ -1,8 +1,33 @@
-body {
+.game-wrapper {
+    margin-top: 20px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
+    gap: 10px;
+
 }
+
+.sound {
+    height: 100%;
+    width: 30px;
+    // background: url('./assets/sound-on.svg');
+    // background-repeat: no-repeat;
+    // background-size: 80%;
+}
+
+.game {
+    position: relative;
+    width: 400px;
+    height: 400px;
+    border: 2px solid #000000;
+
+    .item {
+        position: absolute;
+        width: 25%;
+        height: 25%;
+    }
+}
+
 
 
