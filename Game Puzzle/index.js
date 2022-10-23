@@ -1,5 +1,7 @@
 let columnNum = 4;
+let emtyNumber = columnNum ** 2;
 let combination = new Array(columnNum ** 2).fill(0).map((item,index) => index + 1);
+let winnCombination =  new Array(columnNum ** 2).fill(0).map((item,index) => index + 1);
 
 //-----заполнение html-------------
 
@@ -107,7 +109,44 @@ function shuffleGame(array) {
     return array;
 }
 
+//----------смещение элемента по клику------------
 
+game.addEventListener('click', (event) => {
+    const cellClick = event.target.closest('button');
+    if(!cellClick) {
+        return
+    }
+    const cellNumber = Number(cellClick.innerText);
+    const emptyCell = emtyNumber;
+    const cellCoord = findCoordinates(cellNumber, matrix);
+    const emptyCellCoord = findCoordinates(emptyCell, matrix);
+    const canMove = canMoveCell(cellCoord, emptyCellCoord);
+    if(canMove) {
+        move(cellCoord, emptyCellCoord, matrix)
+    }
+})
+
+function findCoordinates(number, matrix) {
+    for (let y = 0; y < matrix.length; y++) {
+        for (let x = 0; x < matrix.length; x++) {
+            if(matrix[y][x] === number) {
+                return {x, y}
+            }
+        }
+    }
+    return null
+}
+
+function canMoveCell(coord1, coord2) {
+    return ((Math.abs(coord1.x - coord2.x) === 1 && coord1.y === coord2.y || Math.abs(coord1.y - coord2.y) === 1 && coord1.x === coord2.x)) ? true : false;
+}
+
+function move(coord1, coord2, matrix) {
+    const storage = matrix[coord1.y][coord1.x];
+    matrix[coord1.y][coord1.x] = matrix[coord2.y][coord2.x];
+    matrix[coord2.y][coord2.x] = storage;
+    setPozitionMatrix(matrix);
+}
 
 
 // window.addEventListener('load', (e) => {
