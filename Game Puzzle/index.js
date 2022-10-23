@@ -2,10 +2,19 @@
 
 let matrix;
 let columnNum = 4;
-let emtyNumber = columnNum ** 2;
-let combination = new Array(columnNum ** 2).fill(0).map((item,index) => index + 1);
-let winnCombination =  new Array(columnNum ** 2).fill(0).map((item,index) => index + 1);
-let count = 0;
+let emtyNumber;
+let combination;
+let winnCombination;
+let count;
+
+function destinationConstante(num) {
+    emtyNumber = num ** 2;
+    combination = new Array(num ** 2).fill(0).map((item,index) => index + 1);
+    winnCombination =  new Array(num ** 2).fill(0).map((item,index) => index + 1);
+    count = 0;  
+}
+
+destinationConstante(columnNum);
 
 //-----заполнение html-------------
 
@@ -35,11 +44,11 @@ function fillHtml() {
                 <span class="time-tittle">Time: <time class="time"></time></span>
             </div>
             <div class="game">
+            </div>
             <div class="winn-message-container">
-                <div class="winn-message">
-                    <div class="close"></div>
-                    «Congratulations! You solved the puzzle in ##:## and N moves!»
-                </div>
+            <div class="winn-message">
+                <div class="close"></div>
+                «Congratulations! You solved the puzzle in ##:## and N moves!»
             </div>
             </div>
             </div>
@@ -62,10 +71,9 @@ fillHtml();
 //-----------инициализация (определение матрицы, расстановка элементов) -------------------
 
 const game = document.querySelector('.game');
-const cells = Array.from(game.querySelectorAll('.item'));
 const shuffleButton = document.querySelector('.shuffle');
-const sizeGame = document.getElementById('size-game');
 
+let cells = Array.from(game.querySelectorAll('.item'));
 cells[cells.length - 1].style.display = 'none';
 
 startGame()
@@ -74,6 +82,55 @@ function startGame() {
     shuffleGame(combination);
     matrix = getMatrix();
     setPozitionMatrix(matrix);
+}
+
+//----------перемешивание------------
+
+document.querySelector('.shuffle').addEventListener('click', () => {
+    startGame();
+});
+
+function shuffleGame(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    };
+    if(!canSolve(array)) {
+        shuffleGame(array);
+
+    } else {
+        return array;
+    };
+};
+
+function canSolve(array) {
+    const matrix = getMatrix ();
+    const emptyCell = emtyNumber;
+    const emptyCellCoord = findCoordinates(emptyCell, matrix);
+    let sum = 0;
+    let i = 0;
+    while(i < array.length) {
+        for (let j = i+1; j < array.length; j++) {
+            if(array[i] !== emtyNumber) {
+                if(array[i] > array[j]) {
+                    sum += 1;
+                }
+            }
+        }
+        i++;
+    }
+    console.log(emptyCell.y)
+    sum = sum + emptyCellCoord.y + 1;
+    console.log(emptyCellCoord.y)
+    console.log(sum)
+    let canSolveCombination = (sum % 2 === 0) ? true : false;;
+    // if(columnNum % 2 === 0) {
+    //     canSolveCombination = (sum % 2 === 0) ? true : false;
+    // } else {
+    //     canSolveCombination = (sum % 2 === 0) ? false : true;
+    //     // console.log(sum % 2)
+    // }
+    return canSolveCombination;
 }
 
 function getMatrix () {
@@ -88,46 +145,8 @@ function getMatrix () {
             numbers++;
         };
     };
-    // if(!canSolve(matrix)) {
-    //     shuffleGame(array);
-    // } else {
-    //     console.log(2)
-    // } 
     return matrix;
 };
-
-function canSolve(array) {
-    const matrix = getMatrix ();
-    const emptyCell = emtyNumber;
-    const emptyCellCoord = findCoordinates(emptyCell, matrix);
-    // const arrayMatrix = matrix.flat();
-    let sum = 0;
-    let i = 0;
-    while(i < array.length) {
-        for (let j = i+1; j < array.length; j++) {
-            if(array[i] !== emtyNumber) {
-                if(array[i] > array[j]) {
-                    sum += 1;
-                }
-            }
-        }
-        i++;
-    }
-    
-    for (let x = 0; x < matrix.length; x++) {
-        console.log(matrix[emptyCellCoord.y][x])
-        if(matrix[emptyCellCoord.y][x] !== emtyNumber) {
-            sum += matrix[emptyCellCoord.y][x];
-        }
-    }
-    let canSolveCombination
-    if(columnNum % 2 === 0) {
-        canSolveCombination = (sum % 2 === 0) ? true : false;
-    } else {
-        canSolveCombination = (sum % 2 === 0) ? false : true;
-    }
-    return canSolveCombination
-}
 
 function setPozitionMatrix(matrix) {
     let y1 = 0;
@@ -147,24 +166,6 @@ function setCellStyles(cell, x, y, x1, y1) {
     const offset = 100;
     cell.style.transform = `translate(${(x + x1) * offset}%, ${(y + y1) * offset}%)`;
 }
-
-//----------перемешивание------------
-
-document.querySelector('.shuffle').addEventListener('click', () => {
-    startGame();
-});
-
-function shuffleGame(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        let j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    };
-    if(!canSolve(array)) {
-        shuffleGame(array);
-    } else {
-        return array;
-    } 
-};
 
 //----------смещение элемента по клику------------
 
@@ -206,27 +207,22 @@ function move(coord1, coord2, matrix) {
     count++;
 
     if(winn(matrix)) {
-        showWinnMessage()
-    }
+        showWinnMessage();
+    };
 };
 
 //-------------смещение позиции по нажатию на клавиатуру----------
 
 window.addEventListener('keydown', (event) => {
-
     if (!event.key.includes('Arrow')) {
         return;
     };
-
     const emptyCellCoord = findCoordinates(emtyNumber, matrix);
-
+    const direction = event.key.split('Arrow')[1].toLowerCase();
     const cellCoord = {
         x: emptyCellCoord.x,
         y: emptyCellCoord.y,
     };
-
-    const direction = event.key.split('Arrow')[1].toLowerCase();
-
     switch (direction) {
         case 'up':
             cellCoord.y +=1;
@@ -241,14 +237,54 @@ window.addEventListener('keydown', (event) => {
             cellCoord.x -=1;
             break;
     }
-
     if(cellCoord.x >= matrix.length || cellCoord.x < 0 || cellCoord.y >= matrix.length || cellCoord.y < 0) {
         return
     }
-
     move(cellCoord, emptyCellCoord, matrix);
-
 });
+
+//------------изменение размера поля-----------
+
+const sizeGame = document.getElementById('size-game');
+
+sizeGame.addEventListener('change', () => {
+    columnNum = Number(sizeGame.value[0]);
+    destinationConstante(columnNum);
+    game.innerHTML = '';
+    addElements(game);
+    cells = Array.from(game.querySelectorAll('.item'));
+    cells[cells.length - 1].style.display = 'none';
+    switch(columnNum) {
+        case 3:
+            getStyleCells(cells, "32.6%", "1.5em")
+            break;
+        case 4:
+            getStyleCells(cells, "24.5%", "1em")
+            break;
+        case 5:
+            getStyleCells(cells, "19.6%", "1em")
+            break;
+        case 6:
+            getStyleCells(cells, "16.3%", "0.7em")
+            break;
+        case 7:
+            getStyleCells(cells, "13.95%", "0.5em")
+            break;
+        case 8:
+            getStyleCells(cells, "12.2%", "0.5em")
+            break;
+    }
+       
+    startGame();
+})
+
+function getStyleCells(array, widthCell, fontSize) {
+    array.forEach(value => {
+        value.style.width = widthCell;
+        value.style.height = widthCell;
+        value.style.fontSize = fontSize;
+    })
+}
 
 //-----------выигрыш-----------
 
@@ -259,9 +295,8 @@ function winn(matrix) {
             return false;
         };
     };
-
     return true;
-}
+};
 
 const winnMessage = document.querySelector('.winn-message-container');
 const winnText = document.querySelector('.winn-message');
