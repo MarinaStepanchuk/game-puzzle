@@ -1,19 +1,13 @@
-let columnNum = 2;
+//---------инициалиация переменных, дефолтные значения -----------
+
+let matrix;
+let columnNum = 4;
 let emtyNumber = columnNum ** 2;
 let combination = new Array(columnNum ** 2).fill(0).map((item,index) => index + 1);
 let winnCombination =  new Array(columnNum ** 2).fill(0).map((item,index) => index + 1);
 let count = 0;
 
 //-----заполнение html-------------
-
-function addElements (div) {
-    for (let i = 0; i < combination.length; i++) {
-        let item = document.createElement('button');
-        item.classList.add('item');
-        item.innerHTML = `<span class="value">${combination[i]}</span>`;
-        div.appendChild(item);
-    };
-};
 
 function fillHtml() {
     let gameWrapper = document.createElement('div');
@@ -54,6 +48,15 @@ function fillHtml() {
     addElements(game);
 };
 
+function addElements (div) {
+    for (let i = 0; i < combination.length; i++) {
+        let item = document.createElement('button');
+        item.classList.add('item');
+        item.innerHTML = `<span class="value">${combination[i]}</span>`;
+        div.appendChild(item);
+    };
+};
+
 fillHtml();
 
 //-----------инициализация (определение матрицы, расстановка элементов) -------------------
@@ -61,11 +64,17 @@ fillHtml();
 const game = document.querySelector('.game');
 const cells = Array.from(game.querySelectorAll('.item'));
 const shuffleButton = document.querySelector('.shuffle');
+const sizeGame = document.getElementById('size-game');
 
 cells[cells.length - 1].style.display = 'none';
 
-let matrix = getMatrix();
-setPozitionMatrix(matrix);
+startGame()
+
+function startGame() {
+    shuffleGame(combination);
+    matrix = getMatrix();
+    setPozitionMatrix(matrix);
+}
 
 function getMatrix () {
     const matrix = new Array(columnNum);
@@ -79,8 +88,46 @@ function getMatrix () {
             numbers++;
         };
     };
+    // if(!canSolve(matrix)) {
+    //     shuffleGame(array);
+    // } else {
+    //     console.log(2)
+    // } 
     return matrix;
 };
+
+function canSolve(array) {
+    const matrix = getMatrix ();
+    const emptyCell = emtyNumber;
+    const emptyCellCoord = findCoordinates(emptyCell, matrix);
+    // const arrayMatrix = matrix.flat();
+    let sum = 0;
+    let i = 0;
+    while(i < array.length) {
+        for (let j = i+1; j < array.length; j++) {
+            if(array[i] !== emtyNumber) {
+                if(array[i] > array[j]) {
+                    sum += 1;
+                }
+            }
+        }
+        i++;
+    }
+    
+    for (let x = 0; x < matrix.length; x++) {
+        console.log(matrix[emptyCellCoord.y][x])
+        if(matrix[emptyCellCoord.y][x] !== emtyNumber) {
+            sum += matrix[emptyCellCoord.y][x];
+        }
+    }
+    let canSolveCombination
+    if(columnNum % 2 === 0) {
+        canSolveCombination = (sum % 2 === 0) ? true : false;
+    } else {
+        canSolveCombination = (sum % 2 === 0) ? false : true;
+    }
+    return canSolveCombination
+}
 
 function setPozitionMatrix(matrix) {
     let y1 = 0;
@@ -104,9 +151,7 @@ function setCellStyles(cell, x, y, x1, y1) {
 //----------перемешивание------------
 
 document.querySelector('.shuffle').addEventListener('click', () => {
-    const shuffleArray = shuffleGame(combination);
-    matrix = getMatrix(shuffleArray);
-    setPozitionMatrix(matrix);
+    startGame();
 });
 
 function shuffleGame(array) {
@@ -114,7 +159,11 @@ function shuffleGame(array) {
         let j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
     };
-    return array;
+    if(!canSolve(array)) {
+        shuffleGame(array);
+    } else {
+        return array;
+    } 
 };
 
 //----------смещение элемента по клику------------
