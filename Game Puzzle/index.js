@@ -1,11 +1,13 @@
 let columnNum = 4;
 let combination = new Array(columnNum ** 2).fill(0).map((item,index) => index + 1);
 
+//-----заполнение html-------------
+
 function addElements (div) {
     for (let i = 0; i < combination.length; i++) {
         let item = document.createElement('button');
         item.classList.add('item');
-        item.innerHTML = combination[i];
+        item.innerHTML = `<span class="value">${combination[i]}</span>`;
         div.appendChild(item);
     };
 };
@@ -44,15 +46,18 @@ function fillHtml() {
 
 fillHtml();
 
+//-----------инициализация (определение матрицы, расстановка элементов) -------------------
+
 const game = document.querySelector('.game');
 const cells = Array.from(game.querySelectorAll('.item'));
 const shuffleButton = document.querySelector('.shuffle');
 
+cells[cells.length - 1].style.display = 'none';
+
 let matrix = getMatrix();
-setPozitionMatrix(matrix)
+setPozitionMatrix(matrix);
 
 function getMatrix () {
-    // let arr = cells.map((item => Number(item.innerHTML)))
     const matrix = new Array(columnNum);
     for (let i = 0; i < columnNum; i++) {
         matrix[i] = new Array(columnNum);
@@ -68,18 +73,38 @@ function getMatrix () {
 }
 
 function setPozitionMatrix(matrix) {
+    let y1 = 0;
     for (let y = 0; y < matrix.length; y++) {
+        let x1 = 0;
         for (let x = 0; x < matrix.length; x++) {
             const value = matrix[y][x];
             const cell = cells[value - 1];
-            setCellStyles(cell, x, y)
+            setCellStyles(cell, x, y, x1, y1)
+            x1 += 0.015;
         }
+        y1 += 0.015;
     }
 }
 
-function setCellStyles(cell, x, y) {
+function setCellStyles(cell, x, y, x1, y1) {
     const offset = 100;
-    cell.style.transform = `translate(${x * offset}%, ${y * offset}%)`
+    cell.style.transform = `translate(${(x + x1) * offset}%, ${(y + y1) * offset}%)`
+}
+
+//----------перемешивание------------
+
+document.querySelector('.shuffle').addEventListener('click', () => {
+    const shuffleArray = shuffleGame(combination);
+    matrix = getMatrix(shuffleArray);
+    setPozitionMatrix(matrix);
+});
+
+function shuffleGame(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
 }
 
 

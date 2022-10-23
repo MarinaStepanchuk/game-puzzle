@@ -1,11 +1,28 @@
+html {
+    font: 16px "Arial", serif;
+}
+
+body {
+    max-width: 600px;
+    height: 100vh;
+    padding: 2rem;
+    margin: 0 auto;
+    text-align: center;
+    user-select: none;
+}
+
+button {
+    cursor: pointer;
+}
+
 .game-wrapper {
+    width: 100%;
     margin-top: 20px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
     gap: 10px;
-
 }
 
 .sound {
@@ -18,14 +35,45 @@
 
 .game {
     position: relative;
-    width: 400px;
-    height: 400px;
-    border: 2px solid #000000;
+    width: 100%;
+    padding-bottom: 100%;
+    // border: 2px solid #042c4d;
+    background-color: #1f78bb;
+    border: 0.1rem solid #033E6B;
+    box-shadow: 0 .1em .1em -.025em #1b1b1b;
+    // border-radius: 5%;
 
     .item {
         position: absolute;
-        width: 25%;
-        height: 25%;
+        top: 0px;
+        left: 0px;
+        width: 24.5%;
+        height: 24.5%;
+        border: none;
+        font-size: 3.5rem;
+        padding: 2.5%;
+        border-radius: 15%;
+        border: 0.1rem solid #033E6B;
+        box-shadow: 0 .05em .05em -.025em #313030;
+        background:
+           linear-gradient(#c29203, #70570c);
+        margin: 0.5%;
+        color: #0f5d99;
+        box-sizing: border-box;
+        // box-shadow: inset 1px 1px #042c4d;
+        transition: transform 0.2s;
+            .value {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100%;
+                width: 100%;
+                background:
+                    linear-gradient(#a57e07, #FFBF00);
+                box-shadow: 0 .05em .05em -.025em #947109;
+                border: 1px solid #947109;
+                border-radius: 15%;
+            }
     }
 }
 
