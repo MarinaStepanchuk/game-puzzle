@@ -1,4 +1,4 @@
-let columnNum = 4;
+let columnNum = 2;
 let emtyNumber = columnNum ** 2;
 let combination = new Array(columnNum ** 2).fill(0).map((item,index) => index + 1);
 let winnCombination =  new Array(columnNum ** 2).fill(0).map((item,index) => index + 1);
@@ -40,7 +40,14 @@ function fillHtml() {
                 <span class="moves-title">Moves: <span class="moves">0</span></span>
                 <span class="time-tittle">Time: <time class="time"></time></span>
             </div>
-            <div class="game"></div>
+            <div class="game">
+            <div class="winn-message-container">
+                <div class="winn-message">
+                    <div class="close"></div>
+                    «Congratulations! You solved the puzzle in ##:## and N moves!»
+                </div>
+            </div>
+            </div>
             </div>
     `;
     let game = document.querySelector('.game');
@@ -124,7 +131,6 @@ game.addEventListener('click', (event) => {
     const canMove = canMoveCell(cellCoord, emptyCellCoord);
     if(canMove) {
         move(cellCoord, emptyCellCoord, matrix);
-        count++;
     };
 });
 
@@ -148,12 +154,17 @@ function move(coord1, coord2, matrix) {
     matrix[coord1.y][coord1.x] = matrix[coord2.y][coord2.x];
     matrix[coord2.y][coord2.x] = storage;
     setPozitionMatrix(matrix);
+    count++;
+
+    if(winn(matrix)) {
+        showWinnMessage()
+    }
 };
 
 //-------------смещение позиции по нажатию на клавиатуру----------
 
 window.addEventListener('keydown', (event) => {
-    
+
     if (!event.key.includes('Arrow')) {
         return;
     };
@@ -187,10 +198,39 @@ window.addEventListener('keydown', (event) => {
     }
 
     move(cellCoord, emptyCellCoord, matrix);
-    count++;
+
 });
 
+//-----------выигрыш-----------
 
-// window.addEventListener('load', (e) => {
+function winn(matrix) {
+    const arrayMatrix = matrix.flat();
+    for (let i = 0; i < arrayMatrix.length; i++) {
+        if(arrayMatrix[i] !== winnCombination[i]) {
+            return false;
+        };
+    };
 
-// });
+    return true;
+}
+
+const winnMessage = document.querySelector('.winn-message-container');
+const winnText = document.querySelector('.winn-message');
+const closeWinnMessage = document.querySelector('.close');
+
+function showWinnMessage() {
+    winnMessage.classList.add('message-show');
+    game.classList.add('winn-numbers');
+};
+
+winnMessage.addEventListener( 'click', (e) => {
+    if (e.target.className != "winn-message") {
+        winnMessage.classList.remove('message-show')
+    };
+})
+
+closeWinnMessage.addEventListener( 'click', (e) => {
+    if (e.target.className != "winn-message") {
+        winnMessage.classList.remove('message-show')
+    };
+})
