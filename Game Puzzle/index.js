@@ -1,4 +1,4 @@
-//---------инициалиация переменных, дефолтные значения -----------
+//---------инициалиация переменных, присвоение дефолтных значений переменых -----------
 
 let matrix;
 let columnNum = 4;
@@ -47,8 +47,7 @@ function fillHtml() {
             </div>
             <div class="winn-message-container">
             <div class="winn-message">
-                <div class="close"></div>
-                «Congratulations! You solved the puzzle in ##:## and N moves!»
+                
             </div>
             </div>
             </div>
@@ -72,6 +71,9 @@ fillHtml();
 
 const game = document.querySelector('.game');
 const shuffleButton = document.querySelector('.shuffle');
+const moves = document.querySelector('.moves');
+const time = document.querySelector('.time');
+const stopTime = document.querySelector('.stop');
 
 let cells = Array.from(game.querySelectorAll('.item'));
 cells[cells.length - 1].style.display = 'none';
@@ -82,12 +84,15 @@ function startGame() {
     shuffleGame(combination);
     matrix = getMatrix();
     setPozitionMatrix(matrix);
+    count = 0;
+    moves.innerHTML = count;
 }
 
 //----------перемешивание------------
 
 document.querySelector('.shuffle').addEventListener('click', () => {
     startGame();
+    reloadTimer();
 });
 
 function shuffleGame(array) {
@@ -157,15 +162,15 @@ function setPozitionMatrix(matrix) {
             const cell = cells[value - 1];
             setCellStyles(cell, x, y, x1, y1)
             x1 += 0.015;
-        }
+        };
         y1 += 0.015;
-    }
-}
+    };
+};
 
 function setCellStyles(cell, x, y, x1, y1) {
     const offset = 100;
     cell.style.transform = `translate(${(x + x1) * offset}%, ${(y + y1) * offset}%)`;
-}
+};
 
 //----------смещение элемента по клику------------
 
@@ -179,9 +184,16 @@ game.addEventListener('click', (event) => {
     const cellCoord = findCoordinates(cellNumber, matrix);
     const emptyCellCoord = findCoordinates(emptyCell, matrix);
     const canMove = canMoveCell(cellCoord, emptyCellCoord);
+    if(count === 0) {
+        second++;
+        time.innerHTML = getTime(second);
+        startTimer();
+        timerIsStop = false;
+    };
     if(canMove) {
         move(cellCoord, emptyCellCoord, matrix);
     };
+
 });
 
 function findCoordinates(number, matrix) {
@@ -205,11 +217,60 @@ function move(coord1, coord2, matrix) {
     matrix[coord2.y][coord2.x] = storage;
     setPozitionMatrix(matrix);
     count++;
+    moves.innerHTML = count;
 
     if(winn(matrix)) {
         showWinnMessage();
     };
 };
+
+//-----------таймер-----------
+
+let second = 0;
+time.innerHTML = getTime(second)
+
+function countTime() {
+    second++;
+    time.innerHTML = getTime(second);
+};
+
+function getTime(second) {
+    if(second < 10) {
+        return `00:0${second}`;
+    }
+    let min = (Math.floor(second / 60) < 10)? '0'+Math.floor(second / 60): Math.floor(second / 60);
+    let sec = (second % 60 < 10) ? '0'+(second % 60): second % 60;
+    return `${min}:${sec}`;
+}
+
+let timerIsStop = true;
+
+stopTime.addEventListener('click', () => {
+    if(timerIsStop) {
+        startTimer();
+        timerIsStop = false;
+    } else {
+        stopTimer();
+        timerIsStop = true;
+    };
+});
+
+let timeInSecond
+
+function startTimer() {
+    timeInSecond = setInterval("countTime()",1000);
+};
+
+function stopTimer() {
+    clearInterval(timeInSecond)
+};
+
+function reloadTimer() {
+    second = 0;
+    time.innerHTML = getTime(second);
+    stopTimer();
+    timerIsStop = true;
+}
 
 //-------------смещение позиции по нажатию на клавиатуру----------
 
@@ -240,6 +301,12 @@ window.addEventListener('keydown', (event) => {
     if(cellCoord.x >= matrix.length || cellCoord.x < 0 || cellCoord.y >= matrix.length || cellCoord.y < 0) {
         return
     }
+    if(count === 0) {
+        second++;
+        time.innerHTML = getTime(second);
+        startTimer();
+        timerIsStop = false;
+    }
     move(cellCoord, emptyCellCoord, matrix);
 });
 
@@ -248,7 +315,7 @@ window.addEventListener('keydown', (event) => {
 const sizeGame = document.getElementById('size-game');
 
 sizeGame.addEventListener('change', () => {
-    columnNum = Number(sizeGame.value[0]);
+    columnNum = Number(sizeGame.value[0]);    game.classList.add('winn-numbers');
     destinationConstante(columnNum);
     game.innerHTML = '';
     addElements(game);
@@ -274,8 +341,8 @@ sizeGame.addEventListener('change', () => {
             getStyleCells(cells, "12.2%", "0.5em")
             break;
     }
-       
     startGame();
+    reloadTimer();
 })
 
 function getStyleCells(array, widthCell, fontSize) {
@@ -300,11 +367,12 @@ function winn(matrix) {
 
 const winnMessage = document.querySelector('.winn-message-container');
 const winnText = document.querySelector('.winn-message');
-const closeWinnMessage = document.querySelector('.close');
+
 
 function showWinnMessage() {
     winnMessage.classList.add('message-show');
-    game.classList.add('winn-numbers');
+    winnText.innerHTML = `<div class="close"></div>«Congratulations! You solved the puzzle in ${time.innerHTML} and ${moves.innerHTML} moves!»`;
+    second = 0;
 };
 
 winnMessage.addEventListener( 'click', (e) => {
@@ -313,8 +381,10 @@ winnMessage.addEventListener( 'click', (e) => {
     };
 })
 
-closeWinnMessage.addEventListener( 'click', (e) => {
-    if (e.target.className != "winn-message") {
-        winnMessage.classList.remove('message-show')
-    };
-})
+// const closeWinnMessage = document.querySelector('.close');
+
+// closeWinnMessage.addEventListener( 'click', (e) => {
+//     if (e.target.className != "winn-message") {
+//         winnMessage.classList.remove('message-show')
+//     };
+// })
