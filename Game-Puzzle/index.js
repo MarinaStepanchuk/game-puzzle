@@ -6,6 +6,7 @@ let emtyNumber;
 let combination;
 let winnCombination;
 let count;
+let canPlay = true;
 
 function destinationConstante(num) {
     emtyNumber = num ** 2;
@@ -48,11 +49,35 @@ function fillHtml() {
             <div class="game">
             </div>
             <div class="winn-message-container">
-            <div class="winn-message">
-                
+                <div class="winn-message">
+                    <div class="close"></div>
+                    <div class="winn-text"></div>
+                    <div class="add-in-table">
+                        <input type="text" class="player-name" name="player-name" id="name" placeholder="enter your name">
+                        <button class="sande-name">Add</button>
+                    </div>
+                </div>
             </div>
-            </div>
-            </div>
+            <div class="results-container">
+        <div class="results-table">
+        <div class="close-table"></div>
+            <table>
+                <thead>
+                    <tr>
+                        <td>Score</td>
+                        <td>Name</td>
+                        <td>Moves</td>
+                        <td>Time</td>
+                        <td>Board</td>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+        </div>
     `;
     let game = document.querySelector('.game');
     addElements(game);
@@ -78,9 +103,10 @@ const time = document.querySelector('.time');
 const stopTime = document.querySelector('.stop');
 const sound = document.querySelector('.sound');
 const save = document.querySelector('.save');
+const results = document.querySelector('.results');
 
 let cells = Array.from(game.querySelectorAll('.item'));
-cells[cells.length - 1].style.display = 'none';
+cells[cells.length - 1].style.visibility = 'hidden';
 
 let second = 0;
 let timeInSecond
@@ -96,6 +122,7 @@ if(JSON.parse(localStorage.getItem('matrix'))) {
 
 
 function startGame() {
+    canPlay = true;
     shuffleGame(combination);
     matrix = getMatrix();
     setPozitionMatrix(matrix);
@@ -139,17 +166,12 @@ function canSolve(array) {
         }
         i++;
     }
-    console.log(emptyCell.y)
+    
+    if(columnNum % 2 === 0) {
+        sum = sum + emptyCellCoord.y + 1;
+    }
+    let canSolveCombination = (sum % 2 === 0) ? true : false;
     sum = sum + emptyCellCoord.y + 1;
-    console.log(emptyCellCoord.y)
-    console.log(sum)
-    let canSolveCombination = (sum % 2 === 0) ? true : false;;
-    // if(columnNum % 2 === 0) {
-    //     canSolveCombination = (sum % 2 === 0) ? true : false;
-    // } else {
-    //     canSolveCombination = (sum % 2 === 0) ? false : true;
-    //     // console.log(sum % 2)
-    // }
     return canSolveCombination;
 }
 
@@ -190,6 +212,9 @@ function setCellStyles(cell, x, y, x1, y1) {
 //----------смещение элемента по клику------------
 
 game.addEventListener('click', (event) => {
+    if(!canPlay) {
+        return;
+    };
     const cellClick = event.target.closest('button');
     if(!cellClick) {
         return;
@@ -236,7 +261,12 @@ function move(coord1, coord2, matrix) {
     soundMove()
 
     if(winn(matrix)) {
+        canPlay = false;
         showWinnMessage();
+
+            //-----если попадает в скор
+
+    
     };
 };
 
@@ -284,6 +314,9 @@ function reloadTimer() {
 //-------------смещение позиции по нажатию на клавиатуру----------
 
 window.addEventListener('keydown', (event) => {
+    if(!canPlay) {
+       return;
+    };
     if (!event.key.includes('Arrow')) {
         return;
     };
@@ -374,21 +407,23 @@ function winn(matrix) {
     return true;
 };
 
-const winnMessage = document.querySelector('.winn-message-container');
-const winnText = document.querySelector('.winn-message');
+const winnMessageContainer = document.querySelector('.winn-message-container');
+const winnText = document.querySelector('.winn-text');
+const winnMessage = document.querySelector('.winn-message');
 
 
 function showWinnMessage() {
-    winnMessage.classList.add('message-show');
-    winnText.innerHTML = `<div class="close"></div>«Congratulations! You solved the puzzle in ${time.innerHTML} and ${moves.innerHTML} moves!»`;
-    second = 0;
+    winnMessageContainer.classList.add('message-show');
+    winnText.innerHTML = `Congratulations! You solved the puzzle in ${time.innerHTML} and ${moves.innerHTML} moves!`;
+    stopTimer();
+    timerIsStop = true;
 };
 
-winnMessage.addEventListener( 'click', (e) => {
-    if (e.target.className != "winn-message") {
-        winnMessage.classList.remove('message-show')
-    };
-})
+// winnMessageContainer.addEventListener( 'click', (e) => {
+//     if (e.target.className != "winn-message") {
+//         winnMessageContainer.classList.remove('message-show');
+//     };
+// })
 
 // const closeWinnMessage = document.querySelector('.close');
 
@@ -397,6 +432,82 @@ winnMessage.addEventListener( 'click', (e) => {
 //         winnMessage.classList.remove('message-show')
 //     };
 // })
+
+//----------------таблица результатов--------------
+
+// class NewWinner {
+//     constructor(score,name, moves, time, bord) {
+//         this.score = score;
+//         this.name = name;
+//         this.moves = moves;
+//         this.time = time;
+//         this.bord = bord;
+//     }
+// }
+
+const resultTable = document.querySelector('.results-container');
+const tableText = document.querySelector('.results-table');
+const playerName = document.querySelector('.player-name');
+const sandButton = document.querySelector('.sande-name');
+const bodyTable = document.getElementsByTagName('tbody');
+
+let nameWinner;
+
+
+sandButton.addEventListener('click', () => {
+    nameWinner = playerName.value;
+    addWinner();
+    showTable();
+});
+
+function getPositionInScore (move, time) {
+
+}
+
+function addWinner() {
+    const arrayWinners = []
+    const winner = {
+        name: nameWinner,
+        moves: count,
+        time: time.innerHTML,
+        board: `${columnNum}x${columnNum}`,
+    }
+    
+    console.log(winner)
+    arrayWinners.push(1);
+    console.log(arrayWinners)
+    const sortArrayWinners = arrayWinners.sort((a, b) => a.moves - b.moves);
+    sortArrayWinners.pop();
+    const table = "";
+    sortArrayWinners.forEach((winner, index) => {
+        table += `<tr>
+                    <td>${index + 1}</td>
+                    <td>${winner.name}</td>
+                    <td>${winner.moves}</td>
+                    <td>${winner.time}</td>
+                    <td>${winner.board}</td>
+                </tr> `
+    })
+
+    bodyTable.innerHTML = table;
+}
+
+results.addEventListener( 'click', (e) => {
+    showTable();
+});
+
+function showTable() {
+    winnMessageContainer.classList.remove('message-show');
+    resultTable.classList.add('table-show');
+};
+
+
+
+resultTable.addEventListener( 'click', (e) => {
+    if (e.target.className != "results-table") {
+        resultTable.classList.remove('table-show')
+    };
+})
 
 //------------звук по клику------------
 let soundOn = true;
@@ -432,8 +543,97 @@ function getLocalStorage() {
     count = JSON.parse(localStorage.getItem('moves'));
     moves.innerHTML = count;
     second = JSON.parse(localStorage.getItem('time'));
-    console.log(second)
     time.innerHTML = getTime(second);
     timerIsStop = false;
     startTimer();
 }
+
+//-----------перетаскивание ячеек-------------------
+
+// game.addEventListener('mousedown', (event) => {
+//     const cellClick = event.target.closest('button');
+//     if(!cellClick) {
+//         return;
+//     };
+//     const cellNumber = Number(cellClick.innerText);
+//     const emptyCell = emtyNumber;
+//     const cellCoord = findCoordinates(cellNumber, matrix);
+//     const emptyCellCoord = findCoordinates(emptyCell, matrix);
+//     const canMove = canMoveCell(cellCoord, emptyCellCoord);
+//     if(canMove) {
+//         dragAndDrop (cellClick, cellCoord, emptyCellCoord);
+//     };
+//     // cellClick.removeAttribute('draggable');
+// })
+
+
+// function dragAndDrop (cellClick, cellCoord, emptyCellCoord) {
+//     cellClick.setAttribute('draggable', 'true');
+//     const cells = document.querySelectorAll('.item');
+
+//     const dragStart = function() {
+//         setTimeout(() => {
+//             this.classList.add('visibility');
+//         }, 0);
+//     };
+
+//     const dragEnd = function() {
+//         this.classList.remove('visibility');
+//     };
+
+//     const dragOver = function(event) {
+//         event.preventDefault();
+//         console.log(1)
+//     };
+
+//     const dragLeave = function(event) {
+//         event.preventDefault();
+//     };
+
+//     const drag = function(event) {
+//         dragDrop(event);
+//         cellClick.removeAttribute('draggable');
+//     }
+// console.log(777)
+//     const dragDrop = function(event) {
+//         if(!event.target.closest('button')){
+//             console.log(1)
+//             cellClick.style.transition = 'none';
+//             const storage = matrix[cellCoord.y][cellCoord.x];
+//             matrix[cellCoord.y][cellCoord.x] = matrix[emptyCellCoord.y][emptyCellCoord.x];
+//             matrix[emptyCellCoord.y][emptyCellCoord.x] = storage;
+//             setPozitionMatrix(matrix);
+//             count++;
+//             moves.innerHTML = count;
+//             cellClick.classList.remove('visibility');  
+//             // cellClick.style.transition = 'transform 0.2s'
+//         }
+//     };
+
+//     cellClick.addEventListener('dragstart', dragStart);
+//     cellClick.addEventListener('dragend', dragEnd);
+
+//     let empty;
+
+//     cells.forEach(item => {
+//         if(Number(item.textContent) === emtyNumber) {
+//             empty = item;
+//         }
+//         console.log(empty)
+//     })
+
+//     // game.addEventListener('dragleave', dragLeave);
+//     game.addEventListener('dragover', dragOver);
+//     game.addEventListener('drop', drag);
+// }
+
+// game.addEventListener('mouseup', () => {
+//     game.removeEventListener('drop', drag);
+// })
+
+
+
+
+
+
+
