@@ -25,6 +25,7 @@ function fillHtml() {
     document.body.appendChild(gameWrapper);
     gameWrapper.innerHTML = `
         <div class="game-wrapper">
+            <div class="title">GAME PUZZLE</div>
             <div class = 'control-container'>
                 <button class="shuffle">Shuffle and start</button>
                 <button class="stop">Stop</button>
@@ -71,7 +72,7 @@ function fillHtml() {
                         <td>Board</td>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="table-body">
 
                 </tbody>
             </table>
@@ -251,6 +252,8 @@ function canMoveCell(coord1, coord2) {
     return ((Math.abs(coord1.x - coord2.x) === 1 && coord1.y === coord2.y || Math.abs(coord1.y - coord2.y) === 1 && coord1.x === coord2.x)) ? true : false;
 }
 
+const winnerInput = document.querySelector('.add-in-table')
+
 function move(coord1, coord2, matrix) {
     const storage = matrix[coord1.y][coord1.x];
     matrix[coord1.y][coord1.x] = matrix[coord2.y][coord2.x];
@@ -264,9 +267,12 @@ function move(coord1, coord2, matrix) {
         canPlay = false;
         showWinnMessage();
 
-            //-----если попадает в скор
-
-    
+    //-----если попадает в скор
+        const locStorTable = localStorage.getItem('winners');
+        const parsedTable = locStorTable ? JSON.parse(locStorTable) : [];
+        if(parsedTable.length < 10 || count < parsedTable[parsedTable.length-1].moves) {
+            winnerInput.classList.add('show-add-score')
+        }
     };
 };
 
@@ -425,31 +431,23 @@ function showWinnMessage() {
 //     };
 // })
 
-// const closeWinnMessage = document.querySelector('.close');
+const closeWinnMessage = document.querySelector('.close');
 
-// closeWinnMessage.addEventListener( 'click', (e) => {
-//     if (e.target.className != "winn-message") {
-//         winnMessage.classList.remove('message-show')
-//     };
-// })
+winnMessageContainer.addEventListener( 'click', (e) => {
+    
+    if (e.target.className != "winn-text" && e.target.className != "add-in-table" && e.target.className != "player-name" && e.target.className != "sande-name" && e.target.className != "winn-message") {
+        console.log(e.target.className)
+        winnMessageContainer.classList.remove('message-show');
+    };
+})
 
 //----------------таблица результатов--------------
-
-// class NewWinner {
-//     constructor(score,name, moves, time, bord) {
-//         this.score = score;
-//         this.name = name;
-//         this.moves = moves;
-//         this.time = time;
-//         this.bord = bord;
-//     }
-// }
 
 const resultTable = document.querySelector('.results-container');
 const tableText = document.querySelector('.results-table');
 const playerName = document.querySelector('.player-name');
 const sandButton = document.querySelector('.sande-name');
-const bodyTable = document.getElementsByTagName('tbody');
+const bodyTable = document.querySelector('.table-body');
 
 let nameWinner;
 
@@ -473,13 +471,12 @@ function addWinner() {
         board: `${columnNum}x${columnNum}`,
     }
     
-    console.log(winner)
-    arrayWinners.push(1);
-    console.log(arrayWinners)
-    const sortArrayWinners = arrayWinners.sort((a, b) => a.moves - b.moves);
-    sortArrayWinners.pop();
-    const table = "";
-    sortArrayWinners.forEach((winner, index) => {
+    const fromLS = localStorage?.getItem('winners');
+    const sortArrayWinners = [...(fromLS ? JSON.parse(fromLS) : []), winner].sort((a, b) => a.moves - b.moves);
+    const arrayWin = sortArrayWinners.slice(0,10);
+    localStorage.setItem('winners', JSON.stringify(arrayWin));
+    let table = "";
+    arrayWin.forEach((winner, index) => {
         table += `<tr>
                     <td>${index + 1}</td>
                     <td>${winner.name}</td>
@@ -488,6 +485,9 @@ function addWinner() {
                     <td>${winner.board}</td>
                 </tr> `
     })
+    // console.log(table)
+
+    console.log(bodyTable)
 
     bodyTable.innerHTML = table;
 }
