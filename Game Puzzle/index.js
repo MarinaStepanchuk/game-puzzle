@@ -31,6 +31,7 @@ function fillHtml() {
                 <button class="results">Results</button>
                 <button class="sound"></button>
             </div>
+            <div>Frame size:
             <select id="size-game">
                 <option>3x3</option>
                 <option selected>4x4</option>
@@ -39,6 +40,7 @@ function fillHtml() {
                 <option>7x7</option>
                 <option>8x8</option>
             </select>
+            </div>
             <div class="info">
                 <span class="moves-title">Moves: <span class="moves">0</span></span>
                 <span class="time-tittle">Time: <time class="time"></time></span>
@@ -75,11 +77,23 @@ const moves = document.querySelector('.moves');
 const time = document.querySelector('.time');
 const stopTime = document.querySelector('.stop');
 const sound = document.querySelector('.sound');
+const save = document.querySelector('.save');
 
 let cells = Array.from(game.querySelectorAll('.item'));
 cells[cells.length - 1].style.display = 'none';
 
-startGame()
+let second = 0;
+let timeInSecond
+
+
+if(JSON.parse(localStorage.getItem('matrix'))) {
+    getLocalStorage();
+} else {
+    startGame()
+    second = 0;
+    time.innerHTML = getTime(second);
+}
+
 
 function startGame() {
     shuffleGame(combination);
@@ -228,9 +242,6 @@ function move(coord1, coord2, matrix) {
 
 //-----------таймер-----------
 
-let second = 0;
-time.innerHTML = getTime(second)
-
 function countTime() {
     second++;
     time.innerHTML = getTime(second);
@@ -245,8 +256,6 @@ function getTime(second) {
     return `${min}:${sec}`;
 }
 
-let timerIsStop = true;
-
 stopTime.addEventListener('click', () => {
     if(timerIsStop) {
         startTimer();
@@ -256,8 +265,6 @@ stopTime.addEventListener('click', () => {
         timerIsStop = true;
     };
 });
-
-let timeInSecond
 
 function startTimer() {
     timeInSecond = setInterval("countTime()",1000);
@@ -409,4 +416,24 @@ function soundMove() {
         audio.src = "./assets/sound.mp3";
         audio.autoplay = true;
     }
+}
+
+//-----------сохранение результатов------------
+
+save.addEventListener('click', () =>{
+    localStorage.setItem('matrix', JSON.stringify(matrix));
+    localStorage.setItem('moves', JSON.stringify(count));
+    localStorage.setItem('time', JSON.stringify(second));
+})
+
+function getLocalStorage() {
+    matrix = JSON.parse(localStorage.getItem('matrix'));
+    setPozitionMatrix(matrix);
+    count = JSON.parse(localStorage.getItem('moves'));
+    moves.innerHTML = count;
+    second = JSON.parse(localStorage.getItem('time'));
+    console.log(second)
+    time.innerHTML = getTime(second);
+    timerIsStop = false;
+    startTimer();
 }
