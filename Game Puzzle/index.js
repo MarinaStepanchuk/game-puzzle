@@ -74,6 +74,7 @@ const shuffleButton = document.querySelector('.shuffle');
 const moves = document.querySelector('.moves');
 const time = document.querySelector('.time');
 const stopTime = document.querySelector('.stop');
+const sound = document.querySelector('.sound');
 
 let cells = Array.from(game.querySelectorAll('.item'));
 cells[cells.length - 1].style.display = 'none';
@@ -218,6 +219,7 @@ function move(coord1, coord2, matrix) {
     setPozitionMatrix(matrix);
     count++;
     moves.innerHTML = count;
+    soundMove()
 
     if(winn(matrix)) {
         showWinnMessage();
@@ -388,3 +390,23 @@ winnMessage.addEventListener( 'click', (e) => {
 //         winnMessage.classList.remove('message-show')
 //     };
 // })
+
+//------------звук по клику------------
+let soundOn = true;
+
+sound.addEventListener('click', () => {
+    if(soundOn) {
+        sound.classList.add('sound-off');
+    } else {
+        sound.classList.remove('sound-off');
+    }
+    soundOn = !soundOn;
+});
+
+function soundMove() {
+    if(soundOn) {
+        let audio = new Audio;
+        audio.src = "./assets/sound.mp3";
+        audio.autoplay = true;
+    }
+}

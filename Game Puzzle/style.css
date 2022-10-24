@@ -4,7 +4,7 @@ html {
 
 body {
   max-width: 600px;
-  padding: 2rem;
+  padding: 0rem 2rem 2rem 2rem;
   margin: 0 auto;
   text-align: center;
   -webkit-user-select: none;
@@ -15,6 +15,33 @@ body {
 
 button {
   cursor: pointer;
+}
+
+.control-container {
+  width: 100%;
+  padding-top: 2rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 5%;
+}
+
+.sound {
+  height: 30px;
+  width: 30px;
+  background-image: url("./assets/sound-on.svg");
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+.sound-off {
+  background-image: url("./assets/sound-off.svg");
 }
 
 .game-wrapper {
@@ -33,11 +60,6 @@ button {
       -ms-flex-align: center;
           align-items: center;
   gap: 10px;
-}
-
-.sound {
-  height: 100%;
-  width: 30px;
 }
 
 .game {
@@ -67,7 +89,7 @@ button {
   background: -webkit-gradient(linear, left top, left bottom, from(#c29203), to(#70570c));
   background: linear-gradient(#c29203, #70570c);
   margin: 0.5%;
-  color: #0f5d99;
+  color: #1b7ac2;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
   -webkit-transition: -webkit-transform 0.2s;
@@ -136,11 +158,11 @@ button {
       -ms-flex-align: center;
           align-items: center;
   left: 50%;
-  top: 50%;
-  -webkit-transform: translate(-50%, -50%);
-          transform: translate(-50%, -50%);
+  top: 25%;
+  -webkit-transform: translate(-50%);
+          transform: translate(-50%);
   z-index: 10;
-  width: 80%;
+  width: 30%;
   height: 30%;
   background: -webkit-gradient(linear, left top, left bottom, from(#1569a8), to(#1985d8));
   background: linear-gradient(#1569a8, #1985d8);

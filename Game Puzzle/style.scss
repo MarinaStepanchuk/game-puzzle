@@ -4,7 +4,7 @@ html {
 
 body {
     max-width: 600px;
-    padding: 2rem;
+    padding: 0rem 2rem 2rem 2rem;
     margin: 0 auto;
     text-align: center;
     user-select: none;
@@ -12,6 +12,27 @@ body {
 
 button {
     cursor: pointer;
+}
+
+.control-container {
+    width: 100%;
+    padding-top: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5%;
+}
+
+.sound {
+    height: 30px;
+    width: 30px;
+    background-image: url('./assets/sound-on.svg');
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+.sound-off {
+    background-image: url('./assets/sound-off.svg');
 }
 
 .game-wrapper {
@@ -23,10 +44,7 @@ button {
     gap: 10px;
 }
 
-.sound {
-    height: 100%;
-    width: 30px;
-}
+
 
 .game {
     position: relative;
@@ -52,7 +70,7 @@ button {
         background:
            linear-gradient(#c29203, #70570c);
         margin: 0.5%;
-        color: #0f5d99;
+        color: #1b7ac2;
         box-sizing: border-box;
         // box-shadow: inset 1px 1px #042c4d;
         transition: transform 0.2s;
@@ -98,10 +116,10 @@ button {
     justify-content: center;
     align-items: center;
     left: 50%;
-    top: 50%;
-    transform: translate(-50%,-50%);
+    top: 25%;
+    transform: translate(-50%);
     z-index: 10;
-    width: 80%;
+    width: 30%;
     height: 30%;
     background:
     linear-gradient(#1569a8, #1985d8);
