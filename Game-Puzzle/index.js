@@ -574,6 +574,10 @@ unload.addEventListener('click', () =>{
 //-----------перетаскивание ячеек-------------------
 
 game.addEventListener('mousedown', (event) => {
+    let cells = Array.from(game.querySelectorAll('.item'));
+    cells.forEach(elem => {
+        elem.setAttribute('draggable','false')
+    })
     const cellClick = event.target.closest('button');
     if(!cellClick) {
         return;
