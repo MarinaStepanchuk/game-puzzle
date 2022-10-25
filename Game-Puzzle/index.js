@@ -108,8 +108,10 @@ const results = document.querySelector('.results');
 const sizeGame = document.getElementById('size-game');
 
 let cells = Array.from(game.querySelectorAll('.item'));
-cells[cells.length - 1].style.visibility = 'hidden';
+cells[cells.length - 1].style.display = 'none';
 cells[cells.length - 1].classList.add('empty-cell');
+cells[cells.length - 1].classList.remove('item');
+// let emp = cells[cells.length - 1];
 
 let second = 0;
 let timeInSecond
@@ -229,6 +231,7 @@ game.addEventListener('click', (event) => {
         return;
     };
     const cellClick = event.target.closest('button');
+    cellClick.style.transition = 'transform 0.2s'
     if(!cellClick) {
         return;
     };
@@ -246,6 +249,7 @@ game.addEventListener('click', (event) => {
     if(canMove) {
         move(cellCoord, emptyCellCoord, matrix);
     };
+    dragAndDrop (cellClick, cellCoord, emptyCellCoord)
 
 });
 
@@ -465,20 +469,14 @@ sandButton.addEventListener('click', () => {
     showTable();
 });
 
-function getPositionInScore (move, time) {
-
-}
-
 function addWinner() {
-    const arrayWinners = []
     const winner = {
         name: nameWinner,
         moves: count,
         time: time.innerHTML,
         board: `${columnNum}x${columnNum}`,
     }
-    
-    const fromLS = localStorage?.getItem('winners');
+    const fromLS = localStorage.getItem('winners');
     const sortArrayWinners = [...(fromLS ? JSON.parse(fromLS) : []), winner].sort((a, b) => a.moves - b.moves);
     const arrayWin = sortArrayWinners.slice(0,10);
     localStorage.setItem('winners', JSON.stringify(arrayWin));
@@ -501,6 +499,22 @@ results.addEventListener( 'click', (e) => {
 });
 
 function showTable() {
+    if(localStorage.getItem('winners')) {
+        
+        const sortArrayWinners = JSON.parse(localStorage.getItem('winners'));
+        console.log(sortArrayWinners)
+        let table = "";
+        sortArrayWinners.forEach((winner, index) => {
+            table += `<tr>
+                        <td>${index + 1}</td>
+                        <td>${winner.name}</td>
+                        <td>${winner.moves}</td>
+                        <td>${winner.time}</td>
+                        <td>${winner.board}</td>
+                    </tr> `
+        })
+        bodyTable.innerHTML = table;
+    }
     winnMessageContainer.classList.remove('message-show');
     resultTable.classList.add('table-show');
 };
@@ -556,7 +570,6 @@ game.addEventListener('mousedown', (event) => {
     if(canMove) {
         dragAndDrop (cellClick, cellCoord, emptyCellCoord);
     };
-    // cellClick.removeAttribute('draggable');
 })
 
 
@@ -583,11 +596,15 @@ function dragAndDrop (cellClick, cellCoord, emptyCellCoord) {
     };
 
     const drag = function(event) {
-        dragDrop(event);
-        cellClick.removeAttribute('draggable');
+        // console.log(cellClick)
+        if(cellClick.hasAttribute('draggable')){
+            dragDrop(event);
+            cellClick.removeAttribute('draggable');
+        }
     }
 
     const dragDrop = function(event) {
+        if(!event.target.closest('button')){
             cellClick.style.transition = 'none';
             const storage = matrix[cellCoord.y][cellCoord.x];
             matrix[cellCoord.y][cellCoord.x] = matrix[emptyCellCoord.y][emptyCellCoord.x];
@@ -595,29 +612,19 @@ function dragAndDrop (cellClick, cellCoord, emptyCellCoord) {
             setPozitionMatrix(matrix);
             count++;
             moves.innerHTML = count;
-            cellClick.classList.remove('visibility');  
-            // cellClick.style.transition = 'transform 0.2s'
-            // dragAndDrop (cellClick, cellCoord, emptyCellCoord)
-        // }
+            cellClick.classList.remove('visibility'); 
+            cellClick = ''
+        }
     };
 
     cellClick.addEventListener('dragstart', dragStart);
     cellClick.addEventListener('dragend', dragEnd);
 
-    const empty = document.querySelector('.empty-cell');
-
-    // cells.forEach(item => {
-    //     if(Number(item.textContent) === emtyNumber) {
-    //         empty = item;
-    //     }
-    //     console.log(empty)
-    // })
-
-    empty.addEventListener('dragleave', dragLeave);
-    empty.addEventListener('dragover', dragOver);
-    empty.addEventListener('drop', drag);
+    emp = document.querySelector('.empty.cell')
+    game.addEventListener('dragleave', dragLeave);
+    game.addEventListener('dragover', dragOver);
+    game.addEventListener('drop', drag);
 }
-
 
 
 
