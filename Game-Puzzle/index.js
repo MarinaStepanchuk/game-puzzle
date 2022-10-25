@@ -127,6 +127,8 @@ startGame();
 second = 0;
 time.innerHTML = getTime(second);
 let timerIsStop = true;
+startTimer();
+
 
 function startGame() {
     canPlay = true;
@@ -222,6 +224,7 @@ game.addEventListener('click', (event) => {
         return;
     };
     const cellClick = event.target.closest('button');
+    console.log(cellClick)
     cellClick.style.transition = 'transform 0.2s'
     if(!cellClick) {
         return;
@@ -231,16 +234,14 @@ game.addEventListener('click', (event) => {
     const cellCoord = findCoordinates(cellNumber, matrix);
     const emptyCellCoord = findCoordinates(emptyCell, matrix);
     const canMove = canMoveCell(cellCoord, emptyCellCoord);
-    if(count === 0 || timerIsStop) {
-        second++;
-        time.innerHTML = getTime(second);
-        startTimer();
-        timerIsStop = false;
-    };
     if(canMove) {
         move(cellCoord, emptyCellCoord, matrix);
     };
 });
+
+game.addEventListener('mousedown', (event) => {
+    
+})
 
 function findCoordinates(number, matrix) {
     for (let y = 0; y < matrix.length; y++) {
@@ -271,7 +272,6 @@ function move(coord1, coord2, matrix) {
     if(winn(matrix)) {
         canPlay = false;
         showWinnMessage();
-        stopTime();
 
     //-----если попадает в скор
         const locStorTable = localStorage.getItem('winners');
@@ -301,26 +301,25 @@ function getTime(second) {
 stopTime.addEventListener('click', () => {
     if(timerIsStop) {
         startTimer();
-        timerIsStop = false;
     } else {
         stopTimer();
-        timerIsStop = true;
     };
 });
 
 function startTimer() {
     timeInSecond = setInterval("countTime()",1000);
+    timerIsStop = false;
 };
 
 function stopTimer() {
     clearInterval(timeInSecond)
+    timerIsStop = true;
 };
 
 function reloadTimer() {
     second = 0;
     time.innerHTML = getTime(second);
-    stopTimer();
-    timerIsStop = true;
+    startTimer();
 }
 
 //-------------смещение позиции по нажатию на клавиатуру----------
@@ -367,6 +366,7 @@ function reloadTimer() {
 //------------изменение размера поля-----------
 
 sizeGame.addEventListener('change', () => {
+    stopTimer()
     changeSize();
     startGame();
     reloadTimer();
@@ -552,6 +552,7 @@ save.addEventListener('click', () =>{
 
 unload.addEventListener('click', () =>{
     if(JSON.parse(localStorage.getItem('matrix'))) {
+        stopTimer();
         matrix = JSON.parse(localStorage.getItem('matrix'));
         sizeGame.value = `${matrix.length}`;
         changeSize()
@@ -562,7 +563,7 @@ unload.addEventListener('click', () =>{
         second = JSON.parse(localStorage.getItem('time'));
         time.innerHTML = getTime(second);
         timerIsStop = true;
-        stopTimer();
+        startTimer();
     };
 });
 
@@ -584,20 +585,6 @@ game.addEventListener('mousedown', (event) => {
 })
 
 function dragAndDrop (event) {
-    if(!timerIsStop) {
-        if(count === 0 || timerIsStop) {
-            second++;
-            time.innerHTML = getTime(second);
-            startTimer();
-            timerIsStop = false;
-        };
-    } else {
-        second++;
-        time.innerHTML = getTime(second);
-        startTimer();
-        timerIsStop = false;
-    }
-
     const cell = (event.target.className === 'item') ? event.target : event.target.parentNode;
     cell.setAttribute('draggable', 'true');
 
@@ -645,7 +632,6 @@ const drag = function(event) {
     if(winn(matrix)) {
         canPlay = false;
         showWinnMessage();
-        stopTime();
 
     //-----если попадает в скор
         const locStorTable = localStorage.getItem('winners');
