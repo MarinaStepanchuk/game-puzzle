@@ -35,12 +35,12 @@ function fillHtml() {
             </div>
             <div>Frame size:
             <select id="size-game">
-                <option>3x3</option>
-                <option selected>4x4</option>
-                <option>5x5</option>
-                <option>6x6</option>
-                <option>7x7</option>
-                <option>8x8</option>
+                <option value="3">3x3</option>
+                <option value="4" selected>4x4</option>
+                <option  value="5">5x5</option>
+                <option  value="6">6x6</option>
+                <option  value="7">7x7</option>
+                <option  value="8">8x8</option>
             </select>
             </div>
             <div class="info">
@@ -105,18 +105,30 @@ const stopTime = document.querySelector('.stop');
 const sound = document.querySelector('.sound');
 const save = document.querySelector('.save');
 const results = document.querySelector('.results');
+const sizeGame = document.getElementById('size-game');
 
 let cells = Array.from(game.querySelectorAll('.item'));
 cells[cells.length - 1].style.visibility = 'hidden';
+cells[cells.length - 1].classList.add('empty-cell');
 
 let second = 0;
 let timeInSecond
 
 
 if(JSON.parse(localStorage.getItem('matrix'))) {
-    getLocalStorage();
+    matrix = JSON.parse(localStorage.getItem('matrix'));
+    sizeGame.value = `${matrix.length}`;
+    changeSize()
+    canPlay = true;
+    setPozitionMatrix(matrix);
+    count = JSON.parse(localStorage.getItem('moves'));
+    moves.innerHTML = count;
+    second = JSON.parse(localStorage.getItem('time'));
+    time.innerHTML = getTime(second);
+    timerIsStop = false;
+    startTimer();
 } else {
-    startGame()
+    startGame();
     second = 0;
     time.innerHTML = getTime(second);
 }
@@ -360,10 +372,15 @@ window.addEventListener('keydown', (event) => {
 
 //------------изменение размера поля-----------
 
-const sizeGame = document.getElementById('size-game');
-
 sizeGame.addEventListener('change', () => {
-    columnNum = Number(sizeGame.value[0]);    game.classList.add('winn-numbers');
+    changeSize();
+    startGame();
+    reloadTimer();
+})
+
+function changeSize() {
+    columnNum = Number(sizeGame.value[0]);    
+    // game.classList.add('winn-numbers');
     destinationConstante(columnNum);
     game.innerHTML = '';
     addElements(game);
@@ -389,9 +406,7 @@ sizeGame.addEventListener('change', () => {
             getStyleCells(cells, "12.2%", "0.5em")
             break;
     }
-    startGame();
-    reloadTimer();
-})
+}
 
 function getStyleCells(array, widthCell, fontSize) {
     array.forEach(value => {
@@ -537,99 +552,84 @@ save.addEventListener('click', () =>{
     localStorage.setItem('time', JSON.stringify(second));
 })
 
-function getLocalStorage() {
-    matrix = JSON.parse(localStorage.getItem('matrix'));
-    setPozitionMatrix(matrix);
-    count = JSON.parse(localStorage.getItem('moves'));
-    moves.innerHTML = count;
-    second = JSON.parse(localStorage.getItem('time'));
-    time.innerHTML = getTime(second);
-    timerIsStop = false;
-    startTimer();
-}
-
 //-----------перетаскивание ячеек-------------------
 
-// game.addEventListener('mousedown', (event) => {
-//     const cellClick = event.target.closest('button');
-//     if(!cellClick) {
-//         return;
-//     };
-//     const cellNumber = Number(cellClick.innerText);
-//     const emptyCell = emtyNumber;
-//     const cellCoord = findCoordinates(cellNumber, matrix);
-//     const emptyCellCoord = findCoordinates(emptyCell, matrix);
-//     const canMove = canMoveCell(cellCoord, emptyCellCoord);
-//     if(canMove) {
-//         dragAndDrop (cellClick, cellCoord, emptyCellCoord);
-//     };
-//     // cellClick.removeAttribute('draggable');
-// })
+game.addEventListener('mousedown', (event) => {
+    const cellClick = event.target.closest('button');
+    if(!cellClick) {
+        return;
+    };
+    const cellNumber = Number(cellClick.innerText);
+    const emptyCell = emtyNumber;
+    const cellCoord = findCoordinates(cellNumber, matrix);
+    const emptyCellCoord = findCoordinates(emptyCell, matrix);
+    const canMove = canMoveCell(cellCoord, emptyCellCoord);
+    if(canMove) {
+        dragAndDrop (cellClick, cellCoord, emptyCellCoord);
+    };
+    // cellClick.removeAttribute('draggable');
+})
 
 
-// function dragAndDrop (cellClick, cellCoord, emptyCellCoord) {
-//     cellClick.setAttribute('draggable', 'true');
-//     const cells = document.querySelectorAll('.item');
+function dragAndDrop (cellClick, cellCoord, emptyCellCoord) {
+    cellClick.setAttribute('draggable', 'true');
+    const cells = document.querySelectorAll('.item');
 
-//     const dragStart = function() {
-//         setTimeout(() => {
-//             this.classList.add('visibility');
-//         }, 0);
-//     };
+    const dragStart = function() {
+        setTimeout(() => {
+            this.classList.add('visibility');
+        }, 0);
+    };
 
-//     const dragEnd = function() {
-//         this.classList.remove('visibility');
-//     };
+    const dragEnd = function() {
+        this.classList.remove('visibility');
+    };
 
-//     const dragOver = function(event) {
-//         event.preventDefault();
-//         console.log(1)
-//     };
+    const dragOver = function(event) {
+        event.preventDefault();
+    };
 
-//     const dragLeave = function(event) {
-//         event.preventDefault();
-//     };
+    const dragLeave = function(event) {
+        event.preventDefault();
+    };
 
-//     const drag = function(event) {
-//         dragDrop(event);
-//         cellClick.removeAttribute('draggable');
-//     }
-// console.log(777)
-//     const dragDrop = function(event) {
-//         if(!event.target.closest('button')){
-//             console.log(1)
-//             cellClick.style.transition = 'none';
-//             const storage = matrix[cellCoord.y][cellCoord.x];
-//             matrix[cellCoord.y][cellCoord.x] = matrix[emptyCellCoord.y][emptyCellCoord.x];
-//             matrix[emptyCellCoord.y][emptyCellCoord.x] = storage;
-//             setPozitionMatrix(matrix);
-//             count++;
-//             moves.innerHTML = count;
-//             cellClick.classList.remove('visibility');  
-//             // cellClick.style.transition = 'transform 0.2s'
-//         }
-//     };
+    const drag = function(event) {
+        dragDrop(event);
+        cellClick.removeAttribute('draggable');
+    }
 
-//     cellClick.addEventListener('dragstart', dragStart);
-//     cellClick.addEventListener('dragend', dragEnd);
+    const dragDrop = function(event) {
+            cellClick.style.transition = 'none';
+            const storage = matrix[cellCoord.y][cellCoord.x];
+            matrix[cellCoord.y][cellCoord.x] = matrix[emptyCellCoord.y][emptyCellCoord.x];
+            matrix[emptyCellCoord.y][emptyCellCoord.x] = storage;
+            setPozitionMatrix(matrix);
+            count++;
+            moves.innerHTML = count;
+            cellClick.classList.remove('visibility');  
+            // cellClick.style.transition = 'transform 0.2s'
+            // dragAndDrop (cellClick, cellCoord, emptyCellCoord)
+        // }
+    };
 
-//     let empty;
+    cellClick.addEventListener('dragstart', dragStart);
+    cellClick.addEventListener('dragend', dragEnd);
 
-//     cells.forEach(item => {
-//         if(Number(item.textContent) === emtyNumber) {
-//             empty = item;
-//         }
-//         console.log(empty)
-//     })
+    const empty = document.querySelector('.empty-cell');
 
-//     // game.addEventListener('dragleave', dragLeave);
-//     game.addEventListener('dragover', dragOver);
-//     game.addEventListener('drop', drag);
-// }
+    // cells.forEach(item => {
+    //     if(Number(item.textContent) === emtyNumber) {
+    //         empty = item;
+    //     }
+    //     console.log(empty)
+    // })
 
-// game.addEventListener('mouseup', () => {
-//     game.removeEventListener('drop', drag);
-// })
+    empty.addEventListener('dragleave', dragLeave);
+    empty.addEventListener('dragover', dragOver);
+    empty.addEventListener('drop', drag);
+}
+
+
 
 
 
