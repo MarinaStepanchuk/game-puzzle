@@ -28,7 +28,7 @@ function fillHtml() {
             <div class="title">GAME PUZZLE</div>
             <div class = 'control-container'>
                 <button class="shuffle">Shuffle and start</button>
-                <button class="stop">Stop</button>
+                <button class="stop">Pause</button>
                 <button class="save">Save</button>
                 <button class="unload">Unload</button>
                 <button class="results">TOP 10</button>
@@ -301,8 +301,10 @@ function getTime(second) {
 stopTime.addEventListener('click', () => {
     if(timerIsStop) {
         startTimer();
+        stopTime.innerHTML = 'Pause';
     } else {
         stopTimer();
+        stopTime.innerHTML = 'Play';
     };
 });
 
