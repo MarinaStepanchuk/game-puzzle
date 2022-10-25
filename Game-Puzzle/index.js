@@ -316,6 +316,7 @@ function stopTimer() {
 };
 
 function reloadTimer() {
+    stopTimer();
     second = 0;
     time.innerHTML = getTime(second);
     startTimer();
