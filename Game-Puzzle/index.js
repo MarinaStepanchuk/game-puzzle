@@ -635,10 +635,10 @@ const drag = function(event) {
     setPozitionMatrix(matrix);
     count++;
     moves.innerHTML = count;
+    this.setAttribute('draggable','auto')
     if(winn(matrix)) {
         canPlay = false;
         showWinnMessage();
-
     //-----если попадает в скор
         const locStorTable = localStorage.getItem('winners');
         const parsedTable = locStorTable ? JSON.parse(locStorTable) : [];
