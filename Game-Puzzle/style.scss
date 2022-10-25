@@ -259,11 +259,30 @@ button {
 
 .add-in-table {
     order: 2;
-    display: none;
+    // gap: 10px;
+    // display: none;
+}
+
+.player-name {
+    height: 30px;
+    width: 60%;
+    font-size: 1rem;
+    padding: 3px 0px 3px 5px;
+    border-radius: 10px;
+}
+
+.sande-name {
+    width: 20%;
+    border-radius: 10px;
+    font-size: 1rem;;
+    color: #ffbf00;
+    padding: 7px 7px;
+    background-color: #033E6B;
 }
 
 .show-add-score {
     display: flex;
+    justify-content: space-around;
 }
 
 .results-container {

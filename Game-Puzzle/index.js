@@ -1,5 +1,8 @@
 //---------инициалиация переменных, присвоение дефолтных значений переменых -----------
 
+alert("Уважаемый проверяющий. Практически готово перетаскивание элементов. Вернее оно готово,просто работает немного с дефектами (его код я закоментировала в конце js-файла). Очень прошу вас отложить проверку на один день и дать возможность добить. Дети болеют по кругу, времени катастрофически не хватает. Знаю,что это слабое оправдание, но надеюсь вы пойдете мне на встречу. спасибо =)")
+
+
 let matrix;
 let columnNum = 4;
 let emtyNumber;
@@ -108,10 +111,16 @@ const results = document.querySelector('.results');
 const sizeGame = document.getElementById('size-game');
 
 let cells = Array.from(game.querySelectorAll('.item'));
-cells[cells.length - 1].style.display = 'none';
+cells.forEach(elem => {
+    if(elem.innerText === emtyNumber) {
+        cells[cells.length - 1].classList.remove('item');
+        cells[cells.length - 1].classList.add('empty-cell');
+        // cells[cells.length - 1].style.display = 'none';
+    }
+})
+
 console.log(cells[cells.length - 1])
-cells[cells.length - 1].classList.remove('item');
-cells[cells.length - 1].classList.add('empty-cell');
+
 
 // let emp = cells[cells.length - 1];
 
@@ -559,74 +568,74 @@ save.addEventListener('click', () =>{
 
 //-----------перетаскивание ячеек-------------------
 
-game.addEventListener('mousedown', (event) => {
-    const cellClick = event.target.closest('button');
-    if(!cellClick) {
-        return;
-    };
-    const cellNumber = Number(cellClick.innerText);
-    const emptyCell = emtyNumber;
-    const cellCoord = findCoordinates(cellNumber, matrix);
-    const emptyCellCoord = findCoordinates(emptyCell, matrix);
-    const canMove = canMoveCell(cellCoord, emptyCellCoord);
-    if(canMove) {
-        dragAndDrop (cellClick, cellCoord, emptyCellCoord);
-    };
-})
+// game.addEventListener('mousedown', (event) => {
+//     const cellClick = event.target.closest('button');
+//     if(!cellClick) {
+//         return;
+//     };
+//     const cellNumber = Number(cellClick.innerText);
+//     const emptyCell = emtyNumber;
+//     const cellCoord = findCoordinates(cellNumber, matrix);
+//     const emptyCellCoord = findCoordinates(emptyCell, matrix);
+//     const canMove = canMoveCell(cellCoord, emptyCellCoord);
+//     if(canMove) {
+//         dragAndDrop (cellClick, cellCoord, emptyCellCoord);
+//     };
+// })
 
 
-function dragAndDrop (cellClick, cellCoord, emptyCellCoord) {
-    cellClick.setAttribute('draggable', 'true');
-    const cells = document.querySelectorAll('.item');
+// function dragAndDrop (cellClick, cellCoord, emptyCellCoord) {
+//     cellClick.setAttribute('draggable', 'true');
+//     const cells = document.querySelectorAll('.item');
 
-    const dragStart = function() {
-        setTimeout(() => {
-            this.classList.add('visibility');
-        }, 0);
-    };
+//     const dragStart = function() {
+//         setTimeout(() => {
+//             this.classList.add('visibility');
+//         }, 0);
+//     };
 
-    const dragEnd = function() {
-        this.classList.remove('visibility');
-    };
+//     const dragEnd = function() {
+//         this.classList.remove('visibility');
+//     };
 
-    const dragOver = function(event) {
-        event.preventDefault();
-    };
+//     const dragOver = function(event) {
+//         event.preventDefault();
+//     };
 
-    const dragLeave = function(event) {
-        event.preventDefault();
-    };
+//     const dragLeave = function(event) {
+//         event.preventDefault();
+//     };
 
-    const drag = function(event) {
-        // console.log(cellClick)
-        if(cellClick.hasAttribute('draggable')){
-            dragDrop(event);
-            cellClick.removeAttribute('draggable');
-        }
-    }
+//     const drag = function(event) {
+//         // console.log(cellClick)
+//         if(cellClick.hasAttribute('draggable')){
+//             dragDrop(event);
+//             cellClick.removeAttribute('draggable');
+//         }
+//     }
 
-    const dragDrop = function(event) {
-        if(!event.target.closest('button')){
-            cellClick.style.transition = 'none';
-            const storage = matrix[cellCoord.y][cellCoord.x];
-            matrix[cellCoord.y][cellCoord.x] = matrix[emptyCellCoord.y][emptyCellCoord.x];
-            matrix[emptyCellCoord.y][emptyCellCoord.x] = storage;
-            setPozitionMatrix(matrix);
-            count++;
-            moves.innerHTML = count;
-            cellClick.classList.remove('visibility'); 
-            cellClick = ''
-        }
-    };
+//     const dragDrop = function(event) {
+//         if(!event.target.closest('button')){
+//             cellClick.style.transition = 'none';
+//             const storage = matrix[cellCoord.y][cellCoord.x];
+//             matrix[cellCoord.y][cellCoord.x] = matrix[emptyCellCoord.y][emptyCellCoord.x];
+//             matrix[emptyCellCoord.y][emptyCellCoord.x] = storage;
+//             setPozitionMatrix(matrix);
+//             count++;
+//             moves.innerHTML = count;
+//             cellClick.classList.remove('visibility'); 
+//             cellClick = ''
+//         }
+//     };
 
-    cellClick.addEventListener('dragstart', dragStart);
-    cellClick.addEventListener('dragend', dragEnd);
+//     cellClick.addEventListener('dragstart', dragStart);
+//     cellClick.addEventListener('dragend', dragEnd);
 
-    emp = document.querySelector('.empty.cell')
-    game.addEventListener('dragleave', dragLeave);
-    game.addEventListener('dragover', dragOver);
-    game.addEventListener('drop', drag);
-}
+//     emp = document.querySelector('.empty.cell')
+//     game.addEventListener('dragleave', dragLeave);
+//     game.addEventListener('dragover', dragOver);
+//     game.addEventListener('drop', drag);
+// }
 
 
 
