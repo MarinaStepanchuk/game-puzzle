@@ -125,8 +125,8 @@ if(JSON.parse(localStorage.getItem('matrix'))) {
     moves.innerHTML = count;
     second = JSON.parse(localStorage.getItem('time'));
     time.innerHTML = getTime(second);
-    timerIsStop = false;
-    startTimer();
+    timerIsStop = true;
+    stopTimer();
 } else {
     startGame();
     second = 0;
@@ -237,7 +237,7 @@ game.addEventListener('click', (event) => {
     const cellCoord = findCoordinates(cellNumber, matrix);
     const emptyCellCoord = findCoordinates(emptyCell, matrix);
     const canMove = canMoveCell(cellCoord, emptyCellCoord);
-    if(count === 0) {
+    if(count === 0 || timerIsStop) {
         second++;
         time.innerHTML = getTime(second);
         startTimer();
@@ -380,7 +380,6 @@ sizeGame.addEventListener('change', () => {
 
 function changeSize() {
     columnNum = Number(sizeGame.value[0]);    
-    // game.classList.add('winn-numbers');
     destinationConstante(columnNum);
     game.innerHTML = '';
     addElements(game);
@@ -440,18 +439,11 @@ function showWinnMessage() {
     timerIsStop = true;
 };
 
-// winnMessageContainer.addEventListener( 'click', (e) => {
-//     if (e.target.className != "winn-message") {
-//         winnMessageContainer.classList.remove('message-show');
-//     };
-// })
-
 const closeWinnMessage = document.querySelector('.close');
 
 winnMessageContainer.addEventListener( 'click', (e) => {
     
     if (e.target.className != "winn-text" && e.target.className != "add-in-table" && e.target.className != "player-name" && e.target.className != "sande-name" && e.target.className != "winn-message") {
-        console.log(e.target.className)
         winnMessageContainer.classList.remove('message-show');
     };
 })
@@ -500,9 +492,6 @@ function addWinner() {
                     <td>${winner.board}</td>
                 </tr> `
     })
-    // console.log(table)
-
-    console.log(bodyTable)
 
     bodyTable.innerHTML = table;
 }
