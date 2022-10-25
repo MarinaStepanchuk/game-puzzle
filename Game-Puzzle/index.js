@@ -225,11 +225,10 @@ game.addEventListener('click', (event) => {
         return;
     };
     const cellClick = event.target.closest('button');
-    console.log(cellClick)
-    cellClick.style.transition = 'transform 0.2s'
     if(!cellClick) {
         return;
     };
+    cellClick.style.transition = 'transform 0.2s';
     const cellNumber = Number(cellClick.innerText);
     const emptyCell = emtyNumber;
     const cellCoord = findCoordinates(cellNumber, matrix);
@@ -592,7 +591,7 @@ game.addEventListener('mousedown', (event) => {
         cell.addEventListener('dragend', dragEnd);
 
         const emp = document.querySelector('.empty-cell');
-        console.log(1)
+
         emp.addEventListener('dragleave', dragLeave);
         emp.addEventListener('dragover', dragOver);
         emp.addEventListener('drop', drag);
@@ -604,7 +603,7 @@ const dragStart = function(event) {
     if(!cellClick) {
         return;
     };
-    console.log(2)
+
     const cellNumber = Number(cellClick.innerText);
     const emptyCell = emtyNumber;
     
@@ -612,21 +611,20 @@ const dragStart = function(event) {
     const emptyCellCoord = findCoordinates(emptyCell, matrix);
     const canMove = canMoveCell(cellCoord, emptyCellCoord);
     if(canMove) {
-        // console.log(this)
-        // console.log(cellClick)
         this.style.transition = 'none';
         setTimeout(() => {
             this.classList.add('visibility');
         }, 0);
         event.dataTransfer.setData('num',  event.target.innerText);
-        this.setAttribute('draggable','auto')
+        event.dataTransfer.setData('item',  event.target.id);
+        this.setAttribute('draggable','false')
     };
 };
     
 
 const dragEnd = function() {
     this.classList.remove('visibility');
-    this.setAttribute('draggable','auto')
+    this.setAttribute('draggable','false')
 };
 
 const dragOver = function(event) {
@@ -648,7 +646,8 @@ const drag = function(event) {
     setPozitionMatrix(matrix);
     count++;
     moves.innerHTML = count;
-    this.setAttribute('draggable','auto')
+    // const rem = event.dataTransfer.getData('item')
+    // rem.setAttribute('draggable','false')
     if(winn(matrix)) {
         canPlay = false;
         showWinnMessage();
