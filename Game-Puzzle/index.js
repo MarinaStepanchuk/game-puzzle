@@ -113,11 +113,12 @@ const sizeGame = document.getElementById('size-game');
 let cells = Array.from(game.querySelectorAll('.item'));
 cells.forEach(elem => {
     if(elem.innerText === emtyNumber) {
-        cells[cells.length - 1].classList.remove('item');
-        cells[cells.length - 1].classList.add('empty-cell');
-        // cells[cells.length - 1].style.display = 'none';
+        
     }
 })
+cells[cells.length - 1].classList.remove('item');
+        cells[cells.length - 1].classList.add('empty-cell');
+        cells[cells.length - 1].style.display = 'none';
 
 console.log(cells[cells.length - 1])
 
@@ -260,7 +261,7 @@ game.addEventListener('click', (event) => {
     if(canMove) {
         move(cellCoord, emptyCellCoord, matrix);
     };
-    dragAndDrop (cellClick, cellCoord, emptyCellCoord)
+    // dragAndDrop (cellClick, cellCoord, emptyCellCoord)
 
 });
 
