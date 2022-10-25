@@ -584,7 +584,6 @@ game.addEventListener('mousedown', (event) => {
     };
     const cellNumber = Number(cellClick.innerText);
     const emptyCell = emtyNumber;
-    
     const cellCoord = findCoordinates(cellNumber, matrix);
     const emptyCellCoord = findCoordinates(emptyCell, matrix);
     const canMove = canMoveCell(cellCoord, emptyCellCoord);
@@ -603,26 +602,12 @@ game.addEventListener('mousedown', (event) => {
 })
 
 const dragStart = function(event) {
-    const cellClick = event.target.closest('button');
-    if(!cellClick) {
-        return;
-    };
-
-    const cellNumber = Number(cellClick.innerText);
-    const emptyCell = emtyNumber;
-    
-    const cellCoord = findCoordinates(cellNumber, matrix);
-    const emptyCellCoord = findCoordinates(emptyCell, matrix);
-    const canMove = canMoveCell(cellCoord, emptyCellCoord);
-    if(canMove) {
-        this.style.transition = 'none';
-        setTimeout(() => {
-            this.classList.add('visibility');
-        }, 0);
-        event.dataTransfer.setData('num',  event.target.innerText);
-        event.dataTransfer.setData('item',  event.target.id);
-        this.setAttribute('draggable','false')
-    };
+    this.style.transition = 'none';
+    setTimeout(() => {
+        this.classList.add('visibility');
+    }, 0);
+    event.dataTransfer.setData('num',  event.target.innerText);
+    this.setAttribute('draggable','false')
 };
     
 
@@ -650,8 +635,6 @@ const drag = function(event) {
     setPozitionMatrix(matrix);
     count++;
     moves.innerHTML = count;
-    // const rem = event.dataTransfer.getData('item')
-    // rem.setAttribute('draggable','false')
     if(winn(matrix)) {
         canPlay = false;
         showWinnMessage();
