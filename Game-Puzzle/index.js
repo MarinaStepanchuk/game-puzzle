@@ -299,9 +299,11 @@ stopTime.addEventListener('click', () => {
     if(timerIsStop) {
         startTimer();
         stopTime.innerHTML = 'Pause';
+        game.classList.remove('block');
     } else {
         stopTimer();
         stopTime.innerHTML = 'Play';
+        game.classList.add('block');
     };
 });
 

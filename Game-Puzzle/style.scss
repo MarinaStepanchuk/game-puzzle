@@ -34,6 +34,8 @@ body {
     height: 100%;
     position: absolute;
     z-index: 4;
+    transform: translateX(-50%);
+    background-color: #0000002c;
 }
 
 .control-container {
