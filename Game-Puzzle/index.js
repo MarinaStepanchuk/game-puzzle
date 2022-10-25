@@ -126,6 +126,7 @@ let timeInSecond
 startGame();
 second = 0;
 time.innerHTML = getTime(second);
+let timerIsStop = true;
 
 function startGame() {
     canPlay = true;
