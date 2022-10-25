@@ -118,7 +118,7 @@ cells.forEach(elem => {
     }
 })
 
-const emp = cells[cells.length - 1];
+// const emp = cells[cells.length - 1];
 
 let second = 0;
 let timeInSecond
@@ -579,42 +579,52 @@ game.addEventListener('mousedown', (event) => {
     };
     const cellNumber = Number(cellClick.innerText);
     const emptyCell = emtyNumber;
+    
     const cellCoord = findCoordinates(cellNumber, matrix);
     const emptyCellCoord = findCoordinates(emptyCell, matrix);
     const canMove = canMoveCell(cellCoord, emptyCellCoord);
     if(canMove) {
-        dragAndDrop (event);
+        const cell = (event.target.className === 'item') ? event.target : event.target.parentNode;
+        cell.setAttribute('draggable', 'true');
+        cell.addEventListener('dragstart', dragStart);
+        cell.addEventListener('dragend', dragEnd);
+
+        const emp = document.querySelector('.empty-cell');
+        console.log(1)
+        emp.addEventListener('dragleave', dragLeave);
+        emp.addEventListener('dragover', dragOver);
+        emp.addEventListener('drop', drag);
     };
 })
 
-function dragAndDrop (event) {
-    const cell = (event.target.className === 'item') ? event.target : event.target.parentNode;
-    cell.setAttribute('draggable', 'true');
-
-    cell.addEventListener('dragstart', dragStart);
-    cell.addEventListener('dragend', dragEnd);
-
-    const emp = document.querySelector('.empty-cell');
-
-    emp.addEventListener('dragleave', dragLeave);
-    emp.addEventListener('dragover', dragOver);
-    emp.addEventListener('drop', drag);
-}
-
 const dragStart = function(event) {
-    this.style.transition = 'none';
-    setTimeout(() => {
-        this.classList.add('visibility');
-    }, 0);
-    event.dataTransfer.setData('num',  event.target.innerText);
-    this.setAttribute('draggable','auto')
-    // event.dataTransfer.setData('name',  event.target.className)
+    const cellClick = event.target.closest('button');
+    if(!cellClick) {
+        return;
+    };
+    console.log(2)
+    const cellNumber = Number(cellClick.innerText);
+    const emptyCell = emtyNumber;
+    
+    const cellCoord = findCoordinates(cellNumber, matrix);
+    const emptyCellCoord = findCoordinates(emptyCell, matrix);
+    const canMove = canMoveCell(cellCoord, emptyCellCoord);
+    if(canMove) {
+        // console.log(this)
+        // console.log(cellClick)
+        this.style.transition = 'none';
+        setTimeout(() => {
+            this.classList.add('visibility');
+        }, 0);
+        event.dataTransfer.setData('num',  event.target.innerText);
+        this.setAttribute('draggable','auto')
+    };
 };
+    
 
 const dragEnd = function() {
     this.classList.remove('visibility');
     this.setAttribute('draggable','auto')
-
 };
 
 const dragOver = function(event) {
