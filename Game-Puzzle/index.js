@@ -1,8 +1,5 @@
 //---------инициалиация переменных, присвоение дефолтных значений переменых -----------
 
-alert("Уважаемый проверяющий. Практически готово перетаскивание элементов. Вернее оно готово,просто работает немного с дефектами (его код я закоментировала в конце js-файла). Очень прошу вас отложить проверку на один день и дать возможность добить. Дети болеют по кругу, времени катастрофически не хватает. Знаю,что это слабое оправдание, но надеюсь вы пойдете мне на встречу. спасибо =)")
-
-
 let matrix;
 let columnNum = 4;
 let emtyNumber;
@@ -33,6 +30,7 @@ function fillHtml() {
                 <button class="shuffle">Shuffle and start</button>
                 <button class="stop">Stop</button>
                 <button class="save">Save</button>
+                <button class="unload">Unload</button>
                 <button class="results">TOP 10</button>
                 <button class="sound"></button>
             </div>
@@ -91,6 +89,7 @@ function addElements (div) {
     for (let i = 0; i < combination.length; i++) {
         let item = document.createElement('button');
         item.classList.add('item');
+        item.id = 'elem';
         item.innerHTML = `<span class="value">${combination[i]}</span>`;
         div.appendChild(item);
     };
@@ -107,46 +106,26 @@ const time = document.querySelector('.time');
 const stopTime = document.querySelector('.stop');
 const sound = document.querySelector('.sound');
 const save = document.querySelector('.save');
+const unload = document.querySelector('.unload');
 const results = document.querySelector('.results');
 const sizeGame = document.getElementById('size-game');
 
 let cells = Array.from(game.querySelectorAll('.item'));
 cells.forEach(elem => {
-    if(elem.innerText === emtyNumber) {
-        
+    if(Number(elem.innerText) === emtyNumber) {
+        elem.classList.add('empty-cell');
+        elem.style.opacity = '0';
     }
 })
-cells[cells.length - 1].classList.remove('item');
-        cells[cells.length - 1].classList.add('empty-cell');
-        cells[cells.length - 1].style.display = 'none';
 
-console.log(cells[cells.length - 1])
-
-
-// let emp = cells[cells.length - 1];
+const emp = cells[cells.length - 1];
 
 let second = 0;
 let timeInSecond
 
-
-if(JSON.parse(localStorage.getItem('matrix'))) {
-    matrix = JSON.parse(localStorage.getItem('matrix'));
-    sizeGame.value = `${matrix.length}`;
-    changeSize()
-    canPlay = true;
-    setPozitionMatrix(matrix);
-    count = JSON.parse(localStorage.getItem('moves'));
-    moves.innerHTML = count;
-    second = JSON.parse(localStorage.getItem('time'));
-    time.innerHTML = getTime(second);
-    timerIsStop = true;
-    stopTimer();
-} else {
-    startGame();
-    second = 0;
-    time.innerHTML = getTime(second);
-}
-
+startGame();
+second = 0;
+time.innerHTML = getTime(second);
 
 function startGame() {
     canPlay = true;
@@ -171,7 +150,6 @@ function shuffleGame(array) {
     };
     if(!canSolve(array)) {
         shuffleGame(array);
-
     } else {
         return array;
     };
@@ -261,8 +239,6 @@ game.addEventListener('click', (event) => {
     if(canMove) {
         move(cellCoord, emptyCellCoord, matrix);
     };
-    // dragAndDrop (cellClick, cellCoord, emptyCellCoord)
-
 });
 
 function findCoordinates(number, matrix) {
@@ -294,6 +270,7 @@ function move(coord1, coord2, matrix) {
     if(winn(matrix)) {
         canPlay = false;
         showWinnMessage();
+        stopTime();
 
     //-----если попадает в скор
         const locStorTable = localStorage.getItem('winners');
@@ -400,7 +377,12 @@ function changeSize() {
     game.innerHTML = '';
     addElements(game);
     cells = Array.from(game.querySelectorAll('.item'));
-    cells[cells.length - 1].style.display = 'none';
+    cells.forEach(elem => {
+        if(Number(elem.innerText) === emtyNumber) {
+            elem.classList.add('empty-cell');
+            elem.style.opacity = '0';
+        };
+    });
     switch(columnNum) {
         case 3:
             getStyleCells(cells, "32.6%", "1.5em")
@@ -453,6 +435,7 @@ function showWinnMessage() {
     winnText.innerHTML = `Congratulations! You solved the puzzle in ${time.innerHTML} and ${moves.innerHTML} moves!`;
     stopTimer();
     timerIsStop = true;
+    document.body.classList.add('body-over');
 };
 
 const closeWinnMessage = document.querySelector('.close');
@@ -461,6 +444,7 @@ winnMessageContainer.addEventListener( 'click', (e) => {
     
     if (e.target.className != "winn-text" && e.target.className != "add-in-table" && e.target.className != "player-name" && e.target.className != "sande-name" && e.target.className != "winn-message") {
         winnMessageContainer.classList.remove('message-show');
+        document.body.classList.remove('body-over');
     };
 })
 
@@ -508,13 +492,12 @@ function addWinner() {
 
 results.addEventListener( 'click', (e) => {
     showTable();
+    document.body.classList.add('body-over');
 });
 
 function showTable() {
     if(localStorage.getItem('winners')) {
-        
         const sortArrayWinners = JSON.parse(localStorage.getItem('winners'));
-        console.log(sortArrayWinners)
         let table = "";
         sortArrayWinners.forEach((winner, index) => {
             table += `<tr>
@@ -531,11 +514,10 @@ function showTable() {
     resultTable.classList.add('table-show');
 };
 
-
-
 resultTable.addEventListener( 'click', (e) => {
     if (e.target.className != "results-table") {
-        resultTable.classList.remove('table-show')
+        resultTable.classList.remove('table-show');
+        document.body.classList.remove('body-over');
     };
 })
 
@@ -567,77 +549,111 @@ save.addEventListener('click', () =>{
     localStorage.setItem('time', JSON.stringify(second));
 })
 
+unload.addEventListener('click', () =>{
+    if(JSON.parse(localStorage.getItem('matrix'))) {
+        matrix = JSON.parse(localStorage.getItem('matrix'));
+        sizeGame.value = `${matrix.length}`;
+        changeSize()
+        canPlay = true;
+        setPozitionMatrix(matrix);
+        count = JSON.parse(localStorage.getItem('moves'));
+        moves.innerHTML = count;
+        second = JSON.parse(localStorage.getItem('time'));
+        time.innerHTML = getTime(second);
+        timerIsStop = true;
+        stopTimer();
+    };
+});
+
 //-----------перетаскивание ячеек-------------------
 
-// game.addEventListener('mousedown', (event) => {
-//     const cellClick = event.target.closest('button');
-//     if(!cellClick) {
-//         return;
-//     };
-//     const cellNumber = Number(cellClick.innerText);
-//     const emptyCell = emtyNumber;
-//     const cellCoord = findCoordinates(cellNumber, matrix);
-//     const emptyCellCoord = findCoordinates(emptyCell, matrix);
-//     const canMove = canMoveCell(cellCoord, emptyCellCoord);
-//     if(canMove) {
-//         dragAndDrop (cellClick, cellCoord, emptyCellCoord);
-//     };
-// })
+game.addEventListener('mousedown', (event) => {
+    const cellClick = event.target.closest('button');
+    if(!cellClick) {
+        return;
+    };
+    const cellNumber = Number(cellClick.innerText);
+    const emptyCell = emtyNumber;
+    const cellCoord = findCoordinates(cellNumber, matrix);
+    const emptyCellCoord = findCoordinates(emptyCell, matrix);
+    const canMove = canMoveCell(cellCoord, emptyCellCoord);
+    if(canMove) {
+        dragAndDrop (event);
+    };
+})
 
+function dragAndDrop (event) {
+    if(!timerIsStop) {
+        if(count === 0 || timerIsStop) {
+            second++;
+            time.innerHTML = getTime(second);
+            startTimer();
+            timerIsStop = false;
+        };
+    } else {
+        second++;
+        time.innerHTML = getTime(second);
+        startTimer();
+        timerIsStop = false;
+    }
 
-// function dragAndDrop (cellClick, cellCoord, emptyCellCoord) {
-//     cellClick.setAttribute('draggable', 'true');
-//     const cells = document.querySelectorAll('.item');
+    const cell = (event.target.className === 'item') ? event.target : event.target.parentNode;
+    cell.setAttribute('draggable', 'true');
 
-//     const dragStart = function() {
-//         setTimeout(() => {
-//             this.classList.add('visibility');
-//         }, 0);
-//     };
+    cell.addEventListener('dragstart', dragStart);
+    cell.addEventListener('dragend', dragEnd);
 
-//     const dragEnd = function() {
-//         this.classList.remove('visibility');
-//     };
+    const emp = document.querySelector('.empty-cell');
 
-//     const dragOver = function(event) {
-//         event.preventDefault();
-//     };
+    emp.addEventListener('dragleave', dragLeave);
+    emp.addEventListener('dragover', dragOver);
+    emp.addEventListener('drop', drag);
+}
 
-//     const dragLeave = function(event) {
-//         event.preventDefault();
-//     };
+const dragStart = function(event) {
+    this.style.transition = 'none';
+    setTimeout(() => {
+        this.classList.add('visibility');
+    }, 0);
+    event.dataTransfer.setData('num',  event.target.innerText)
+};
 
-//     const drag = function(event) {
-//         // console.log(cellClick)
-//         if(cellClick.hasAttribute('draggable')){
-//             dragDrop(event);
-//             cellClick.removeAttribute('draggable');
-//         }
-//     }
+const dragEnd = function() {
+    this.classList.remove('visibility');
+};
 
-//     const dragDrop = function(event) {
-//         if(!event.target.closest('button')){
-//             cellClick.style.transition = 'none';
-//             const storage = matrix[cellCoord.y][cellCoord.x];
-//             matrix[cellCoord.y][cellCoord.x] = matrix[emptyCellCoord.y][emptyCellCoord.x];
-//             matrix[emptyCellCoord.y][emptyCellCoord.x] = storage;
-//             setPozitionMatrix(matrix);
-//             count++;
-//             moves.innerHTML = count;
-//             cellClick.classList.remove('visibility'); 
-//             cellClick = ''
-//         }
-//     };
+const dragOver = function(event) {
+    event.preventDefault();
+};
 
-//     cellClick.addEventListener('dragstart', dragStart);
-//     cellClick.addEventListener('dragend', dragEnd);
+const dragLeave = function(event) {
+    event.preventDefault();
+};
 
-//     emp = document.querySelector('.empty.cell')
-//     game.addEventListener('dragleave', dragLeave);
-//     game.addEventListener('dragover', dragOver);
-//     game.addEventListener('drop', drag);
-// }
+const drag = function(event) {
+    const cellNumber = Number(event.dataTransfer.getData('num'));
+    const emptyCell = Number(this.innerText);
+    const cellCoord = findCoordinates(cellNumber, matrix);
+    const emptyCellCoord = findCoordinates(emptyCell, matrix);
+    const storage = matrix[cellCoord.y][cellCoord.x];
+    matrix[cellCoord.y][cellCoord.x] = matrix[emptyCellCoord.y][emptyCellCoord.x];
+    matrix[emptyCellCoord.y][emptyCellCoord.x] = storage;
+    setPozitionMatrix(matrix);
+    count++;
+    moves.innerHTML = count;
+    if(winn(matrix)) {
+        canPlay = false;
+        showWinnMessage();
+        stopTime();
 
+    //-----если попадает в скор
+        const locStorTable = localStorage.getItem('winners');
+        const parsedTable = locStorTable ? JSON.parse(locStorTable) : [];
+        if(parsedTable.length < 10 || count < parsedTable[parsedTable.length-1].moves) {
+            winnerInput.classList.add('show-add-score')
+        }
+    };
+}
 
 
 
