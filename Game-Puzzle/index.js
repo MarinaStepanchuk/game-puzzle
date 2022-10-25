@@ -33,7 +33,7 @@ function fillHtml() {
                 <button class="shuffle">Shuffle and start</button>
                 <button class="stop">Stop</button>
                 <button class="save">Save</button>
-                <button class="results">Results</button>
+                <button class="results">TOP 10</button>
                 <button class="sound"></button>
             </div>
             <div class="frame">Frame size:
