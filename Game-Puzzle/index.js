@@ -33,8 +33,8 @@ function fillHtml() {
                 <button class="results">Results</button>
                 <button class="sound"></button>
             </div>
-            <div>Frame size:
-            <select id="size-game">
+            <div class="frame">Frame size:
+            <select class="size-value" id="size-game">
                 <option value="3">3x3</option>
                 <option value="4" selected>4x4</option>
                 <option  value="5">5x5</option>
@@ -109,8 +109,10 @@ const sizeGame = document.getElementById('size-game');
 
 let cells = Array.from(game.querySelectorAll('.item'));
 cells[cells.length - 1].style.display = 'none';
-cells[cells.length - 1].classList.add('empty-cell');
+console.log(cells[cells.length - 1])
 cells[cells.length - 1].classList.remove('item');
+cells[cells.length - 1].classList.add('empty-cell');
+
 // let emp = cells[cells.length - 1];
 
 let second = 0;
@@ -335,44 +337,44 @@ function reloadTimer() {
 
 //-------------смещение позиции по нажатию на клавиатуру----------
 
-window.addEventListener('keydown', (event) => {
-    if(!canPlay) {
-       return;
-    };
-    if (!event.key.includes('Arrow')) {
-        return;
-    };
-    const emptyCellCoord = findCoordinates(emtyNumber, matrix);
-    const direction = event.key.split('Arrow')[1].toLowerCase();
-    const cellCoord = {
-        x: emptyCellCoord.x,
-        y: emptyCellCoord.y,
-    };
-    switch (direction) {
-        case 'up':
-            cellCoord.y +=1;
-            break;
-        case 'down':
-            cellCoord.y -=1;
-            break;
-        case 'left':
-            cellCoord.x +=1;
-            break;
-        case 'right':
-            cellCoord.x -=1;
-            break;
-    }
-    if(cellCoord.x >= matrix.length || cellCoord.x < 0 || cellCoord.y >= matrix.length || cellCoord.y < 0) {
-        return
-    }
-    if(count === 0) {
-        second++;
-        time.innerHTML = getTime(second);
-        startTimer();
-        timerIsStop = false;
-    }
-    move(cellCoord, emptyCellCoord, matrix);
-});
+// window.addEventListener('keydown', (event) => {
+//     if(!canPlay) {
+//        return;
+//     };
+//     if (!event.key.includes('Arrow')) {
+//         return;
+//     };
+//     const emptyCellCoord = findCoordinates(emtyNumber, matrix);
+//     const direction = event.key.split('Arrow')[1].toLowerCase();
+//     const cellCoord = {
+//         x: emptyCellCoord.x,
+//         y: emptyCellCoord.y,
+//     };
+//     switch (direction) {
+//         case 'up':
+//             cellCoord.y +=1;
+//             break;
+//         case 'down':
+//             cellCoord.y -=1;
+//             break;
+//         case 'left':
+//             cellCoord.x +=1;
+//             break;
+//         case 'right':
+//             cellCoord.x -=1;
+//             break;
+//     }
+//     if(cellCoord.x >= matrix.length || cellCoord.x < 0 || cellCoord.y >= matrix.length || cellCoord.y < 0) {
+//         return
+//     }
+//     if(count === 0) {
+//         second++;
+//         time.innerHTML = getTime(second);
+//         startTimer();
+//         timerIsStop = false;
+//     }
+//     move(cellCoord, emptyCellCoord, matrix);
+// });
 
 //------------изменение размера поля-----------
 

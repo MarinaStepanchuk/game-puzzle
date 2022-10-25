@@ -25,13 +25,122 @@ body {
   color: #033E6B;
 }
 
+@media (max-width: 400px) {
+  .title {
+    font-size: 3.5rem;
+  }
+}
+
+.control-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  max-width: 100%;
+  gap: 10px;
+  padding-top: 0px;
+}
+
+.control-container button {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  border-radius: 10px;
+  color: #ffbf00;
+  font-size: 0.9rem;
+  padding: 10px 20px;
+  background-color: #033E6B;
+  height: 50px;
+}
+
+@media (max-width: 610px) {
+  .control-container button {
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+    height: 50px;
+  }
+}
+
+@media (max-width: 550px) {
+  .control-container button {
+    font-size: 1.5rem;
+    height: 30px;
+  }
+}
+
+.frame {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 15px;
+  font-size: 1.7rem;
+  color: #033E6B;
+}
+
+@media (max-width: 550px) {
+  .frame {
+    font-size: 2rem;
+    padding: 0px;
+  }
+}
+
+.size-value {
+  padding: 10px 0px;
+  font-size: 1rem;
+  color: #033E6B;
+  border-radius: 13px;
+  padding-left: 7px;
+  width: 70px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+@media (max-width: 550px) {
+  .size-value {
+    font-size: 1.2rem;
+    height: 25px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+  }
+}
+
+.info {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  padding-top: 10px;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 20%;
+  font-size: 2rem;
+  color: #033E6B;
+}
+
 button {
   cursor: pointer;
 }
 
 .control-container {
   width: 100%;
-  padding-top: 2rem;
+  padding-top: 1rem;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -50,6 +159,7 @@ button {
   background-image: url("./assets/sound-on.svg");
   background-position: center center;
   background-repeat: no-repeat;
+  background-size: 70%;
 }
 
 .sound-off {
@@ -71,7 +181,13 @@ button {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  gap: 10px;
+  gap: 20px;
+}
+
+@media (max-width: 550px) {
+  .game-wrapper {
+    gap: 10px;
+  }
 }
 
 .game {

@@ -18,6 +18,86 @@ body {
     padding-top: 20px;
     font-size: 4rem;
     color: #033E6B;
+
+    @media (max-width: 400px) {
+        font-size: 3.5rem;
+    }
+}
+
+.control-container {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 100%;
+    gap: 10px;
+    padding-top: 0px;
+    button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 10px;
+        color: #ffbf00;
+        font-size: 0.9rem;
+        padding: 10px 20px;
+        background-color: #033E6B;
+        height: 50px;
+        // flex-wrap: wrap;
+
+        @media (max-width: 610px) {
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+            height: 50px;
+        }
+
+        @media (max-width: 550px) {
+            font-size: 1.5rem;
+            height: 30px;
+        }
+
+    }
+}
+
+.frame {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    // padding: 10px 0px;
+    font-size: 1.7rem;
+    color: #033E6B;
+
+    @media (max-width: 550px) {
+        font-size: 2rem;
+        padding: 0px;
+    }
+}
+
+.size-value {
+    padding: 10px 0px;
+    font-size: 1rem;
+    color: #033E6B;
+    border-radius: 13px;
+    padding-left: 7px;
+    width: 70px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+
+    @media (max-width: 550px) {
+        font-size: 1.2rem;
+        height: 25px;
+        padding-top: 2px;
+        padding-bottom: 2px;
+    }
+}
+
+.info {
+    width: 100%;
+    display: flex;
+    padding-top: 10px;
+    justify-content: center;
+    align-items: center;
+    gap: 20%;
+    font-size: 2rem;
+    color: #033E6B;
 }
 
 button {
@@ -26,7 +106,7 @@ button {
 
 .control-container {
     width: 100%;
-    padding-top: 2rem;
+    padding-top: 1rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -39,6 +119,7 @@ button {
     background-image: url('./assets/sound-on.svg');
     background-position: center center;
     background-repeat: no-repeat;
+    background-size: 70%;
 }
 
 .sound-off {
@@ -51,7 +132,11 @@ button {
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    gap: 10px;
+    gap: 20px;
+
+    @media (max-width: 550px) {
+        gap: 10px;
+    }
 }
 
 .game {
