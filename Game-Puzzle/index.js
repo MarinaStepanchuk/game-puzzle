@@ -137,6 +137,7 @@ function startGame() {
     setPozitionMatrix(matrix);
     count = 0;
     moves.innerHTML = count;
+    game.classList.remove('block');
 }
 
 //----------перемешивание------------
@@ -239,10 +240,6 @@ game.addEventListener('click', (event) => {
     };
 });
 
-game.addEventListener('mousedown', (event) => {
-    
-})
-
 function findCoordinates(number, matrix) {
     for (let y = 0; y < matrix.length; y++) {
         for (let x = 0; x < matrix.length; x++) {
@@ -258,7 +255,7 @@ function canMoveCell(coord1, coord2) {
     return ((Math.abs(coord1.x - coord2.x) === 1 && coord1.y === coord2.y || Math.abs(coord1.y - coord2.y) === 1 && coord1.x === coord2.x)) ? true : false;
 }
 
-const winnerInput = document.querySelector('.add-in-table')
+const winnerInput = document.querySelector('.add-in-table');
 
 function move(coord1, coord2, matrix) {
     const storage = matrix[coord1.y][coord1.x];
@@ -439,6 +436,8 @@ function showWinnMessage() {
     stopTimer();
     timerIsStop = true;
     document.body.classList.add('body-over');
+    canPlay = false;
+    game.classList.add('block');
 };
 
 const closeWinnMessage = document.querySelector('.close');
@@ -566,6 +565,7 @@ unload.addEventListener('click', () =>{
         time.innerHTML = getTime(second);
         timerIsStop = true;
         startTimer();
+        game.classList.remove('block');
     };
 });
 
@@ -605,11 +605,15 @@ const dragStart = function(event) {
     setTimeout(() => {
         this.classList.add('visibility');
     }, 0);
-    event.dataTransfer.setData('num',  event.target.innerText)
+    event.dataTransfer.setData('num',  event.target.innerText);
+    this.setAttribute('draggable','auto')
+    // event.dataTransfer.setData('name',  event.target.className)
 };
 
 const dragEnd = function() {
     this.classList.remove('visibility');
+    this.setAttribute('draggable','auto')
+
 };
 
 const dragOver = function(event) {
